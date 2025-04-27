@@ -47,7 +47,7 @@ class TimerScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                ElevatedButton(onPressed: () {}, child: Text("Resume")),
+                PauseOrResumeButton(),
                 SizedBox(width: 16),
                 ElevatedButton(onPressed: () {}, child: Text("Break")),
               ],
@@ -59,13 +59,40 @@ class TimerScreen extends StatelessWidget {
   }
 }
 
+class PauseOrResumeButton extends StatelessWidget {
+  const PauseOrResumeButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Selector<TimerModel, bool>(
+      selector: (context, timerModel) => timerModel.isCounting,
+      builder: (context, isCounting, child) {
+        return ElevatedButton(
+          onPressed: () {
+            TimerModel model = context.read<TimerModel>();
+
+            if (isCounting) {
+              // Pause
+              model.pause();
+            } else {
+              model.resume();
+            }
+          },
+          child: Text(isCounting ? "Pause" : "Resume"),
+        );
+      },
+    );
+  }
+}
+
 class StopWatchWidget extends StatelessWidget {
   const StopWatchWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<TimerModel>(
-      builder: (context, timerModel, child) {
+    return Selector<TimerModel, int>(
+      selector: (context, timerModel) => timerModel.focusTime,
+      builder: (context, focusTime, child) {
         return Container(
           width: 250,
           height: 250,
@@ -77,7 +104,7 @@ class StopWatchWidget extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.fromLTRB(32, 0, 32, 0),
               child: AutoSizeText(
-                timerModel.focusTime,
+                TimerModel.formatTime(focusTime),
                 maxLines: 1,
                 maxFontSize: 68,
                 style: TextStyle(fontSize: 68),
