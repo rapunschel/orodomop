@@ -51,8 +51,9 @@ class TimerModel with ChangeNotifier {
     if (_isCounting) return; // Avoid starting new timers
 
     _isCounting = true;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
+      notifyListeners();
     });
   }
 
@@ -67,14 +68,16 @@ class TimerModel with ChangeNotifier {
   }
 
   void resume() {
-    _isCounting = true;
+    _startTimer();
+    notifyListeners();
   }
 
   void pause() {
-    _isCounting = false;
+    _stopTimer();
+    notifyListeners();
   }
 
-  String _formatTime(int seconds) {
+  static String formatTime(int seconds) {
     int hours;
     int minutes;
     int remSeconds;
@@ -92,7 +95,7 @@ class TimerModel with ChangeNotifier {
     return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${remSeconds.toString().padLeft(2, '0')}';
   }
 
-  get focusTime => _formatTime(_focusTime);
+  get focusTime => _focusTime;
   get isCounting => _isCounting;
-  get breakTimeRemaining => _formatTime(_breakTimeRemaining);
+  get breakTimeRemaining => _breakTimeRemaining;
 }
