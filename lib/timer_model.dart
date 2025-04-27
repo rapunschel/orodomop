@@ -6,16 +6,17 @@ class TimerModel with ChangeNotifier {
   int _focusTime;
   int _breakTimeRemaining;
   bool _isCounting;
+  bool _isOnBreak;
   final SharedPreferences _prefs;
   String _pausedAt; // Keep track when app is sent to background
   Timer? _timer; // Used to async increment focusTime
-
   TimerModel._(
     this._focusTime,
     this._breakTimeRemaining,
     this._isCounting,
     this._prefs,
     this._pausedAt,
+    this._isOnBreak,
   );
 
   // factory constructor to load data.
@@ -24,6 +25,8 @@ class TimerModel with ChangeNotifier {
     int breakTimeRemaining = prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = prefs.getInt("focusTime") ?? 0;
     bool isCounting = prefs.getBool("isCounting") ?? false;
+    bool isOnBreak = prefs.getBool("isOnBreak") ?? false;
+
     String pausedAt = prefs.getString("pausedAt") ?? "";
 
     return TimerModel._(
@@ -32,6 +35,7 @@ class TimerModel with ChangeNotifier {
       isCounting,
       prefs,
       pausedAt,
+      isOnBreak,
     );
   }
 
@@ -39,12 +43,14 @@ class TimerModel with ChangeNotifier {
     await _prefs.setInt("breakTimeRemaining", _breakTimeRemaining);
     await _prefs.setInt("focusTime", _focusTime);
     await _prefs.setBool("isCounting", _isCounting);
+    await _prefs.setBool("isOnBreak", _isOnBreak);
     await _prefs.setString("pausedAt", _pausedAt);
   }
 
   void start() {
-    _focusTime = 0;
+    _focusTime = 600; // TODO for testig purposes only
     _startTimer();
+    notifyListeners();
   }
 
   void _startTimer() {
@@ -57,6 +63,19 @@ class TimerModel with ChangeNotifier {
     });
   }
 
+  void _countDownTimer() {
+    if (_isOnBreak) return; // Avoid starting new timers
+
+    _isOnBreak = true;
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (--_breakTimeRemaining == 0) {
+        resetTimer();
+      }
+
+      notifyListeners();
+    });
+  }
+
   void _stopTimer() {
     _isCounting = false;
     _timer?.cancel();
@@ -65,6 +84,9 @@ class TimerModel with ChangeNotifier {
   void resetTimer() {
     _stopTimer();
     _focusTime = 0;
+    _breakTimeRemaining = 0;
+    _isOnBreak = false;
+    notifyListeners();
   }
 
   void resume() {
@@ -74,6 +96,13 @@ class TimerModel with ChangeNotifier {
 
   void pause() {
     _stopTimer();
+    notifyListeners();
+  }
+
+  void relax(int x) {
+    _stopTimer(); // Stop the timer in case it's running.
+    _breakTimeRemaining = (_focusTime / x).round();
+    _countDownTimer(); // Start countdown timer
     notifyListeners();
   }
 
@@ -96,6 +125,8 @@ class TimerModel with ChangeNotifier {
   }
 
   get focusTime => _focusTime;
+  get isOnBreak => _isOnBreak;
+
   get isCounting => _isCounting;
   get breakTimeRemaining => _breakTimeRemaining;
 }
