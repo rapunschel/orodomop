@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:orodomop/screens/timer_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/timer_model.dart';
+import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final timerModel = await TimerModel.create();
+
+  FlutterForegroundTask.initCommunicationPort();
   runApp(
     MultiProvider(
       providers: [ChangeNotifierProvider(create: (context) => timerModel)],
@@ -22,11 +25,12 @@ class OrodomopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint("Restart");
     return MaterialApp(
+      routes: {'/': (context) => const TimerScreen()},
+      initialRoute: '/',
       title: 'Orodomop',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: TimerScreen(),
     );
   }
 }
