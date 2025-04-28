@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'package:orodomop/service_manager.dart';
 
 class TimerModel with ChangeNotifier {
   int _focusTime;
@@ -44,6 +45,7 @@ class TimerModel with ChangeNotifier {
   void start() {
     _focusTime = 0;
     _startTimer();
+    ServiceManager.startService();
     notifyListeners();
   }
 
@@ -76,6 +78,7 @@ class TimerModel with ChangeNotifier {
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
+    ServiceManager.stopService();
     notifyListeners();
   }
 
@@ -104,6 +107,7 @@ class TimerModel with ChangeNotifier {
     int hours;
     int minutes;
     int remSeconds;
+
     if (seconds < 60) {
       return seconds.toString().padLeft(2, '0');
     } else if (seconds < 3600) {
@@ -119,7 +123,6 @@ class TimerModel with ChangeNotifier {
   }
 
   get focusTime => _focusTime;
-
   get isCounting => _isCounting;
   get breakTimeRemaining => _breakTimeRemaining;
 }
