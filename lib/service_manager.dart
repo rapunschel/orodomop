@@ -85,11 +85,8 @@ class ServiceManager {
   }
 
   // Sending
-  static void incrementCount() {
-    FlutterForegroundTask.sendDataToTask(TimerHandler.incrementCountCommand);
-  }
 
   static void updateTime(int time) {
-    FlutterForegroundTask.sendDataToTask(TimerHandler.updateTime);
+    FlutterForegroundTask.sendDataToTask(time);
   }
 }

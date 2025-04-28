@@ -9,48 +9,29 @@ void startCallback() {
 }
 
 class TimerHandler extends TaskHandler {
-  static const String incrementCountCommand = 'incrementCount';
-  static const String updateTime = 'updateTime';
+  //static const String updateTime = 'updateTime';
 
-  int _count = 0;
-  int? _time = 0;
-  void _incrementCount() {
-    _count++;
-
+  void _updateTime(int time) {
     // Update notification content.
     FlutterForegroundTask.updateService(
-      notificationTitle: 'Hello MyTaskHandler :)',
-      notificationText: 'count: $_count',
+      notificationTitle: 'Focusing',
+      notificationText: 'count: $time',
     );
 
     // Send data to main isolate.
-    FlutterForegroundTask.sendDataToMain(_count);
-  }
-
-  void _updateTime() {
-    _count++;
-
-    // Update notification content.
-    FlutterForegroundTask.updateService(
-      notificationTitle: 'Hello MyTaskHandler :)',
-      notificationText: 'count: $_time',
-    );
-
-    // Send data to main isolate.
-    FlutterForegroundTask.sendDataToMain(_count);
+    FlutterForegroundTask.sendDataToMain(time);
   }
 
   // Called when the task is started.
   @override
   Future<void> onStart(DateTime timestamp, TaskStarter starter) async {
     debugPrint('onStart(starter: ${starter.name})');
-    _incrementCount();
   }
 
   // Called based on the eventAction set in ForegroundTaskOptions.
   @override
   void onRepeatEvent(DateTime timestamp) {
-    _incrementCount();
+    // empty for now
   }
 
   // Called when the task is destroyed.
@@ -62,14 +43,7 @@ class TimerHandler extends TaskHandler {
   // Called when data is sent using `FlutterForegroundTask.sendDataToTask`.
   @override
   void onReceiveData(Object data) {
-    debugPrint('onReceiveData: $data');
-    if (data == incrementCountCommand) {
-      _incrementCount();
-    } else if (data == updateTime) {
-      _updateTime();
-    } else {
-      _time = (data is int) ? data : null;
-    }
+    _updateTime((data is int) ? data : 0);
   }
 
   // Called when the notification button is pressed.
