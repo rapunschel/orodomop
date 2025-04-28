@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/services/service_manager.dart';
-import 'package:orodomop/timer_model.dart';
+import 'package:orodomop/models/timer_model.dart';
 import 'package:orodomop/widgets/buttons/timer_control_row.dart';
 import 'package:orodomop/widgets/stopwatches/count_down_watch.dart';
 import 'package:orodomop/widgets/stopwatches/custom_stop_watch.dart';

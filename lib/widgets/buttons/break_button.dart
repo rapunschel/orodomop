@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:orodomop/timer_model.dart';
+import 'package:orodomop/models/timer_model.dart';
 
 class BreakButton extends StatelessWidget {
   const BreakButton({super.key});

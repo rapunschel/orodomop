@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/screens/timer_screen.dart';
 import 'package:provider/provider.dart';
-import 'package:orodomop/timer_model.dart';
+import 'package:orodomop/models/timer_model.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
 void main() async {
