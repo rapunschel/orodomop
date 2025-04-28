@@ -27,6 +27,7 @@ class OrodomopApp extends StatelessWidget {
   Widget build(BuildContext context) {
     debugPrint("Restart");
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       routes: {'/': (context) => const TimerScreen()},
       initialRoute: '/',
       title: 'Orodomop',
