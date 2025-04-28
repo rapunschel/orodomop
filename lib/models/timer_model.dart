@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:orodomop/services/service_manager.dart';
+import 'package:orodomop/services/notification_service.dart';
 
 class TimerModel with ChangeNotifier {
   int _focusTime;
@@ -64,6 +65,11 @@ class TimerModel with ChangeNotifier {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (--_breakTimeRemaining == 0) {
         _resetTimer();
+        NotificationService().showNotification(
+          id: 0,
+          title: "Orodomop",
+          body: "Break finished!",
+        );
       }
 
       ServiceManager.startRelaxTimer(breakTimeRemaining);
