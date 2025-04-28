@@ -66,9 +66,9 @@ class ServiceManager {
         notificationTitle: 'Orodomp is running',
         notificationText: 'Tap to return to the app',
         notificationIcon: null,
-        notificationButtons: [
+        /*notificationButtons: [
           const NotificationButton(id: 'btn_hello', text: 'hello'),
-        ],
+        ],*/
         notificationInitialRoute: '/',
         callback: startCallback,
       );
