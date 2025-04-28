@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:orodomop/foreground_service.dart';
+import 'package:orodomop/services/foreground_service.dart';
 
 class ServiceManager {
   // SETUP

@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
-import 'package:orodomop/service_manager.dart';
+import 'package:orodomop/services/service_manager.dart';
 
 class TimerModel with ChangeNotifier {
   int _focusTime;
