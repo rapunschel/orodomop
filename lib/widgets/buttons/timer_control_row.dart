@@ -17,7 +17,7 @@ class TimerControlRow extends StatelessWidget {
       return StartButton();
     }
 
-    if (model.isOnBreak) {
+    if (model.breakTimeRemaining > 0) {
       return EndBreakButton();
     }
 

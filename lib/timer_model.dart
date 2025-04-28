@@ -6,7 +6,7 @@ class TimerModel with ChangeNotifier {
   int _focusTime;
   int _breakTimeRemaining;
   bool _isCounting;
-  bool _isOnBreak;
+  // bool _isOnBreak;
   final SharedPreferences _prefs;
   String _pausedAt; // Keep track when app is sent to background
   Timer? _timer; // Used to async increment focusTime
@@ -16,7 +16,6 @@ class TimerModel with ChangeNotifier {
     this._isCounting,
     this._prefs,
     this._pausedAt,
-    this._isOnBreak,
   );
 
   // factory constructor to load data.
@@ -25,8 +24,6 @@ class TimerModel with ChangeNotifier {
     int breakTimeRemaining = prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = prefs.getInt("focusTime") ?? 0;
     bool isCounting = prefs.getBool("isCounting") ?? false;
-    bool isOnBreak = prefs.getBool("isOnBreak") ?? false;
-
     String pausedAt = prefs.getString("pausedAt") ?? "";
 
     return TimerModel._(
@@ -35,7 +32,6 @@ class TimerModel with ChangeNotifier {
       isCounting,
       prefs,
       pausedAt,
-      isOnBreak,
     );
   }
 
@@ -43,7 +39,6 @@ class TimerModel with ChangeNotifier {
     await _prefs.setInt("breakTimeRemaining", _breakTimeRemaining);
     await _prefs.setInt("focusTime", _focusTime);
     await _prefs.setBool("isCounting", _isCounting);
-    await _prefs.setBool("isOnBreak", _isOnBreak);
     await _prefs.setString("pausedAt", _pausedAt);
   }
 
@@ -64,9 +59,6 @@ class TimerModel with ChangeNotifier {
   }
 
   void _countDownTimer() {
-    if (_isOnBreak) return; // Avoid starting new timers
-
-    _isOnBreak = true;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (--_breakTimeRemaining == 0) {
         _resetTimer();
@@ -85,7 +77,6 @@ class TimerModel with ChangeNotifier {
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
-    _isOnBreak = false;
     notifyListeners();
   }
 
@@ -107,8 +98,7 @@ class TimerModel with ChangeNotifier {
   }
 
   void endBreak() {
-    _breakTimeRemaining = 0;
-    notifyListeners();
+    _resetTimer();
   }
 
   static String formatTime(int seconds) {
@@ -130,7 +120,6 @@ class TimerModel with ChangeNotifier {
   }
 
   get focusTime => _focusTime;
-  get isOnBreak => _isOnBreak;
 
   get isCounting => _isCounting;
   get breakTimeRemaining => _breakTimeRemaining;

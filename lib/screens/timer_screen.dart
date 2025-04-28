@@ -18,7 +18,9 @@ class TimerScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                model.isOnBreak ? CountDownWatch() : CustomStopWatch(),
+                model.breakTimeRemaining > 0
+                    ? CountDownWatch()
+                    : CustomStopWatch(),
                 SizedBox(height: 16),
                 TimerControlRow(),
               ],
