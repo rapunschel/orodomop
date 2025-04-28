@@ -9,7 +9,7 @@ class EndBreakButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        context.read<TimerModel>().resetTimer();
+        context.read<TimerModel>().endBreak();
       },
       child: Text("Stop"),
     );

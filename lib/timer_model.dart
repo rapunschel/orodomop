@@ -69,7 +69,7 @@ class TimerModel with ChangeNotifier {
     _isOnBreak = true;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (--_breakTimeRemaining == 0) {
-        resetTimer();
+        _resetTimer();
       }
 
       notifyListeners();
@@ -81,7 +81,7 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
   }
 
-  void resetTimer() {
+  void _resetTimer() {
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
@@ -103,6 +103,11 @@ class TimerModel with ChangeNotifier {
     _stopTimer(); // Stop the timer in case it's running.
     _breakTimeRemaining = (_focusTime / x).round();
     _countDownTimer(); // Start countdown timer
+    notifyListeners();
+  }
+
+  void endBreak() {
+    _breakTimeRemaining = 0;
     notifyListeners();
   }
 
