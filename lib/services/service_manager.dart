@@ -57,10 +57,7 @@ class ServiceManager {
       return FlutterForegroundTask.startService(
         // You can manually specify the foregroundServiceType for the service
         // to be started, as shown in the comment below.
-        // serviceTypes: [
-        //   ForegroundServiceTypes.dataSync,
-        //   ForegroundServiceTypes.remoteMessaging,
-        // ],
+        serviceTypes: [ForegroundServiceTypes.dataSync],
         serviceId: 256,
         notificationTitle: 'Orodomp is running',
         notificationText: 'Tap to return to the app',
