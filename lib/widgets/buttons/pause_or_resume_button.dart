@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/timer_model.dart';
+import 'package:orodomop/models/timer_model.dart';
 import 'package:provider/provider.dart';
 
 class PauseOrResumeButton extends StatelessWidget {

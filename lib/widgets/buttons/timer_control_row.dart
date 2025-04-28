@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/timer_model.dart';
+import 'package:orodomop/models/timer_model.dart';
 import 'package:orodomop/widgets/buttons/break_button.dart';
 import 'package:orodomop/widgets/buttons/end_break_button.dart';
 import 'package:orodomop/widgets/buttons/pause_or_resume_button.dart';

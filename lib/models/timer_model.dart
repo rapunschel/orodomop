@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+import 'package:orodomop/services/service_manager.dart';
+import 'package:orodomop/services/notification_service.dart';
 
 class TimerModel with ChangeNotifier {
   int _focusTime;
@@ -45,6 +47,7 @@ class TimerModel with ChangeNotifier {
     _focusTime = 0;
     _startTimer();
     notifyListeners();
+    ServiceManager.startService();
   }
 
   void _startTimer() {
@@ -53,6 +56,7 @@ class TimerModel with ChangeNotifier {
     _isCounting = true;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
+      ServiceManager.startFocusTimer(_focusTime);
       notifyListeners();
     });
   }
@@ -61,8 +65,14 @@ class TimerModel with ChangeNotifier {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (--_breakTimeRemaining == 0) {
         _resetTimer();
+        NotificationService().showNotification(
+          id: 0,
+          title: "Orodomop",
+          body: "Break finished!",
+        );
       }
 
+      ServiceManager.startRelaxTimer(breakTimeRemaining);
       notifyListeners();
     });
   }
@@ -77,6 +87,7 @@ class TimerModel with ChangeNotifier {
     _focusTime = 0;
     _breakTimeRemaining = 0;
     notifyListeners();
+    ServiceManager.stopService();
   }
 
   void resume() {
@@ -100,26 +111,7 @@ class TimerModel with ChangeNotifier {
     _resetTimer();
   }
 
-  static String formatTime(int seconds) {
-    int hours;
-    int minutes;
-    int remSeconds;
-    if (seconds < 60) {
-      return seconds.toString().padLeft(2, '0');
-    } else if (seconds < 3600) {
-      minutes = (seconds % 3600) ~/ 60;
-      remSeconds = seconds % 60;
-      return '${minutes.toString().padLeft(2, '0')}:${remSeconds.toString().padLeft(2, '0')}';
-    }
-
-    hours = seconds ~/ 3600;
-    minutes = (seconds % 3600) ~/ 60;
-    remSeconds = seconds % 60;
-    return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${remSeconds.toString().padLeft(2, '0')}';
-  }
-
   get focusTime => _focusTime;
-
   get isCounting => _isCounting;
   get breakTimeRemaining => _breakTimeRemaining;
 }
