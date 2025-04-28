@@ -45,8 +45,8 @@ class TimerModel with ChangeNotifier {
   void start() {
     _focusTime = 0;
     _startTimer();
-    ServiceManager.startService();
     notifyListeners();
+    ServiceManager.startService();
   }
 
   void _startTimer() {
@@ -55,6 +55,7 @@ class TimerModel with ChangeNotifier {
     _isCounting = true;
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
+      ServiceManager.startFocusTimer(_focusTime);
       notifyListeners();
     });
   }
@@ -65,6 +66,7 @@ class TimerModel with ChangeNotifier {
         _resetTimer();
       }
 
+      ServiceManager.startRelaxTimer(breakTimeRemaining);
       notifyListeners();
     });
   }
@@ -78,8 +80,8 @@ class TimerModel with ChangeNotifier {
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
-    ServiceManager.stopService();
     notifyListeners();
+    ServiceManager.stopService();
   }
 
   void resume() {

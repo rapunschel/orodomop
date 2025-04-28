@@ -81,12 +81,16 @@ class ServiceManager {
 
   // Receiving
   static void onReceiveTaskData(Object data) {
-    debugPrint('onReceiveTaskData: $data');
+    //debugPrint('onReceiveTaskData: $data');
   }
 
   // Sending
 
-  static void updateTime(int time) {
-    FlutterForegroundTask.sendDataToTask(time);
+  static void startFocusTimer(int time) {
+    FlutterForegroundTask.sendDataToTask([TimerHandler.focus, time]);
+  }
+
+  static void startRelaxTimer(int time) {
+    FlutterForegroundTask.sendDataToTask([TimerHandler.relax, time]);
   }
 }
