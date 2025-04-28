@@ -6,10 +6,9 @@ class TimerModel with ChangeNotifier {
   int _focusTime;
   int _breakTimeRemaining;
   bool _isCounting;
-  // bool _isOnBreak;
   final SharedPreferences _prefs;
   String _pausedAt; // Keep track when app is sent to background
-  Timer? _timer; // Used to async increment focusTime
+  Timer? _timer;
   TimerModel._(
     this._focusTime,
     this._breakTimeRemaining,
@@ -43,7 +42,7 @@ class TimerModel with ChangeNotifier {
   }
 
   void start() {
-    _focusTime = 600; // TODO for testig purposes only
+    _focusTime = 0;
     _startTimer();
     notifyListeners();
   }
