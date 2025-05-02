@@ -42,13 +42,11 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
+  void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
-      // ServiceManager.stopService();
-      await context.read<TimerModel>().saveState();
+      context.read<TimerModel>().saveState();
     } else if (state == AppLifecycleState.detached) {
-      // App is being terminated, stop the foreground service
-      await ServiceManager.stopService();
+      ServiceManager.stopService();
     }
   }
 
