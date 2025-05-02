@@ -24,12 +24,12 @@ class TimerModel with ChangeNotifier {
     int focusTime = prefs.getInt("focusTime") ?? 0;
     bool isCounting = prefs.getBool("isCounting") ?? false;
     String timestamp = prefs.getString("timestamp") ?? "";
-    debugPrint(timestamp);
+
     if (timestamp.isEmpty) {
       // empty, avoid formatexception when calling DateTime.parse
     } else if (isCounting) {
       focusTime +=
-          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds + 5000;
+          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
     } else if (breakTimeRemaining > 0) {
       breakTimeRemaining -=
           DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
@@ -51,8 +51,6 @@ class TimerModel with ChangeNotifier {
     await _prefs.setBool("isCounting", _isCounting);
     String test = DateTime.now().toString();
     await _prefs.setString("timestamp", test);
-    debugPrint("focustime: $focusTime");
-    debugPrint("focustime: $test");
   }
 
   void start() async {
@@ -63,7 +61,6 @@ class TimerModel with ChangeNotifier {
         return;
       }
       _isCounting = true;
-      await saveState(); // Ensure state is saved, in case app is killed
       ServiceManager.startService(); // Start the foreground service
 
       _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -128,14 +125,12 @@ class TimerModel with ChangeNotifier {
   void pause() async {
     _stopTimer();
     notifyListeners();
-    await saveState(); // save state
   }
 
   void relax(int x) async {
     _stopTimer(); // Stop the timer in case it's running.
     _breakTimeRemaining = (_focusTime / x).round();
     _focusTime = 0; // reset foucs time.
-    await saveState(); // Save state for break
     _countDownTimer(); // Start countdown timer
     notifyListeners();
   }
