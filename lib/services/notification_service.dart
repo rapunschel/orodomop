@@ -1,6 +1,13 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'dart:typed_data';
 
+enum NotificationId {
+  breakFinished(1);
+
+  final int value;
+  const NotificationId(this.value);
+}
+
 class NotificationService {
   final notificationPlugin = FlutterLocalNotificationsPlugin();
 
@@ -44,10 +51,19 @@ class NotificationService {
 
   // Show Notification
   Future<void> showNotification({
-    required int id,
+    required NotificationId id,
     required String title,
     required String body,
   }) async {
-    return notificationPlugin.show(id, title, body, notificationDetails());
+    return notificationPlugin.show(
+      id.value,
+      title,
+      body,
+      notificationDetails(),
+    );
+  }
+
+  Future<void> cancelNotification(NotificationId id) async {
+    await notificationPlugin.cancel(id.value);
   }
 }

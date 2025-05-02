@@ -47,6 +47,10 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
       context.read<TimerModel>().saveState();
     } else if (state == AppLifecycleState.detached) {
       ServiceManager.stopService();
+    } else if (state == AppLifecycleState.inactive) {
+      NotificationService().cancelNotification(NotificationId.breakFinished);
+    } else if (state == AppLifecycleState.resumed) {
+      NotificationService().cancelNotification(NotificationId.breakFinished);
     }
   }
 

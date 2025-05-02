@@ -52,7 +52,7 @@ class TimerModel with ChangeNotifier {
     await _prefs.setString("timestamp", DateTime.now().toString());
   }
 
-  void start() async {
+  void start() {
     try {
       // Avoid starting new timers, unless neccessary
       // example: app restart, this ensures timer is started when calling start
@@ -82,21 +82,18 @@ class TimerModel with ChangeNotifier {
   }
 
   void _countDownTimer() {
+    ServiceManager.startService();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      ServiceManager.startService(); // Start the foreground service
-
-      if (--_breakTimeRemaining == 0) {
+      if (--_breakTimeRemaining <= 0) {
         _resetTimer();
-
-        // TODO use scheduler for notification.
         NotificationService().showNotification(
-          id: 0,
+          id: NotificationId.breakFinished,
           title: "Orodomop",
           body: "Break finished!",
         );
+        return;
       }
 
-      // Starts the foreground timer.
       ServiceManager.startRelaxTimer(breakTimeRemaining);
       notifyListeners();
     });
@@ -108,12 +105,12 @@ class TimerModel with ChangeNotifier {
   }
 
   void _resetTimer() async {
+    await _prefs.clear(); // Reset sharedpreferences
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
-    await _prefs.clear(); // Reset sharedpreferences
-    notifyListeners();
     ServiceManager.stopService();
+    notifyListeners();
   }
 
   void resume() {
@@ -123,6 +120,7 @@ class TimerModel with ChangeNotifier {
 
   void pause() async {
     _stopTimer();
+    ServiceManager.stopService();
     notifyListeners();
   }
 
