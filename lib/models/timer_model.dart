@@ -86,11 +86,6 @@ class TimerModel with ChangeNotifier {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (--_breakTimeRemaining <= 0) {
         _resetTimer();
-        NotificationService().showNotification(
-          id: NotificationId.breakFinished,
-          title: "Orodomop",
-          body: "Break finished!",
-        );
         return;
       }
 
@@ -127,6 +122,14 @@ class TimerModel with ChangeNotifier {
   void relax(int x) async {
     _stopTimer(); // Stop the timer in case it's running.
     _breakTimeRemaining = (_focusTime / x).round();
+
+    // schedule break notification
+
+    await NotificationService().scheduleBreakNotification(
+      NotificationId.scheduledNotif,
+      _breakTimeRemaining,
+    );
+
     _focusTime = 0; // reset foucs time.
     _countDownTimer(); // Start countdown timer
     notifyListeners();
@@ -134,6 +137,7 @@ class TimerModel with ChangeNotifier {
 
   void endBreak() {
     _resetTimer();
+    NotificationService().cancelNotification(NotificationId.scheduledNotif);
   }
 
   get focusTime => _focusTime;

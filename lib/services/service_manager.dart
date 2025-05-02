@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:orodomop/services/foreground_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ServiceManager {
   // SETUP
@@ -23,6 +24,18 @@ class ServiceManager {
         // This function requires `android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS` permission.
         await FlutterForegroundTask.requestIgnoreBatteryOptimization();
       }
+
+      await requestExactAlarmPermission();
+    }
+  }
+
+  static Future<void> requestExactAlarmPermission() async {
+    // Check if the permission is already granted
+    PermissionStatus status = await Permission.scheduleExactAlarm.status;
+
+    // If the permission is not granted, request it
+    if (!status.isGranted) {
+      await Permission.scheduleExactAlarm.request();
     }
   }
 

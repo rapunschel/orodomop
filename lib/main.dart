@@ -5,11 +5,17 @@ import 'package:orodomop/models/timer_model.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:orodomop/services/notification_service.dart';
 import 'package:orodomop/services/service_manager.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:flutter_timezone/flutter_timezone.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
+
   final timerModel = await TimerModel.create();
-  NotificationService().initNotification();
+  await NotificationService().initNotification();
 
   FlutterForegroundTask.initCommunicationPort();
   runApp(
@@ -47,10 +53,8 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
       context.read<TimerModel>().saveState();
     } else if (state == AppLifecycleState.detached) {
       ServiceManager.stopService();
-    } else if (state == AppLifecycleState.inactive) {
-      NotificationService().cancelNotification(NotificationId.breakFinished);
     } else if (state == AppLifecycleState.resumed) {
-      NotificationService().cancelNotification(NotificationId.breakFinished);
+      NotificationService().cancelNotification(NotificationId.scheduledNotif);
     }
   }
 
