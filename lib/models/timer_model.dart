@@ -49,8 +49,7 @@ class TimerModel with ChangeNotifier {
     await _prefs.setInt("breakTimeRemaining", _breakTimeRemaining);
     await _prefs.setInt("focusTime", _focusTime);
     await _prefs.setBool("isCounting", _isCounting);
-    String test = DateTime.now().toString();
-    await _prefs.setString("timestamp", test);
+    await _prefs.setString("timestamp", DateTime.now().toString());
   }
 
   void start() async {
