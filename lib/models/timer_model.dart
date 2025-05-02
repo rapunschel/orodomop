@@ -33,6 +33,11 @@ class TimerModel with ChangeNotifier {
     } else if (breakTimeRemaining > 0) {
       breakTimeRemaining -=
           DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+
+      // Because somehow the scheduled notif is gone upon app restart
+      NotificationService().restartScheduleBreakNotification(
+        breakTimeRemaining,
+      );
     }
 
     TimerModel model = TimerModel._(

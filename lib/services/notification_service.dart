@@ -23,6 +23,15 @@ class NotificationService {
     await notificationPlugin.initialize(initSettings);
   }
 
+  Future<void> restartScheduleBreakNotification(int seconds) async {
+    List<PendingNotificationRequest> pending =
+        await notificationPlugin.pendingNotificationRequests();
+
+    if (pending.isEmpty) {
+      scheduleBreakNotification(NotificationId.scheduledNotif, seconds);
+    }
+  }
+
   Future<void> scheduleBreakNotification(NotificationId id, int seconds) async {
     try {
       final scheduledTime = tz.TZDateTime.now(
