@@ -9,14 +9,12 @@ class TimerModel with ChangeNotifier {
   int _breakTimeRemaining;
   bool _isCounting;
   final SharedPreferences _prefs;
-  String _pausedAt; // Keep track when app is sent to background
   Timer? _timer;
   TimerModel._(
     this._focusTime,
     this._breakTimeRemaining,
     this._isCounting,
     this._prefs,
-    this._pausedAt,
   );
 
   // factory constructor to load data.
@@ -25,46 +23,76 @@ class TimerModel with ChangeNotifier {
     int breakTimeRemaining = prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = prefs.getInt("focusTime") ?? 0;
     bool isCounting = prefs.getBool("isCounting") ?? false;
-    String pausedAt = prefs.getString("pausedAt") ?? "";
+    String timestamp = prefs.getString("timestamp") ?? "";
+    debugPrint(timestamp);
+    if (timestamp.isEmpty) {
+      // empty, avoid formatexception when calling DateTime.parse
+    } else if (isCounting) {
+      focusTime +=
+          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds + 5000;
+    } else if (breakTimeRemaining > 0) {
+      breakTimeRemaining -=
+          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+    }
 
-    return TimerModel._(
+    TimerModel model = TimerModel._(
       focusTime,
       breakTimeRemaining,
       isCounting,
       prefs,
-      pausedAt,
     );
+
+    return model;
   }
 
   Future<void> saveState() async {
     await _prefs.setInt("breakTimeRemaining", _breakTimeRemaining);
     await _prefs.setInt("focusTime", _focusTime);
     await _prefs.setBool("isCounting", _isCounting);
-    await _prefs.setString("pausedAt", _pausedAt);
+    String test = DateTime.now().toString();
+    await _prefs.setString("timestamp", test);
+    debugPrint("focustime: $focusTime");
+    debugPrint("focustime: $test");
   }
 
-  void start() {
-    _focusTime = 0;
-    _startTimer();
+  void start() async {
+    try {
+      // Avoid starting new timers, unless neccessary
+      // example: app restart, this ensures timer is started when calling start
+      if (_isCounting && _timer != null) {
+        return;
+      }
+      _isCounting = true;
+      await saveState(); // Ensure state is saved, in case app is killed
+      ServiceManager.startService(); // Start the foreground service
+
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        _focusTime++;
+        ServiceManager.startFocusTimer(_focusTime);
+        notifyListeners();
+      });
+    } catch (e) {
+      debugPrint("error calling _startTime: $e");
+    }
     notifyListeners();
-    ServiceManager.startService();
   }
 
-  void _startTimer() {
-    if (_isCounting) return; // Avoid starting new timers
-
-    _isCounting = true;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      _focusTime++;
-      ServiceManager.startFocusTimer(_focusTime);
-      notifyListeners();
-    });
+  void onAppRestart() {
+    if (isCounting) {
+      start();
+    } else if (breakTimeRemaining > 0) {
+      _countDownTimer();
+    }
   }
 
   void _countDownTimer() {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      ServiceManager.startService(); // Start the foreground service
+
       if (--_breakTimeRemaining == 0) {
         _resetTimer();
+
+        // TODO use scheduler for notification.
         NotificationService().showNotification(
           id: 0,
           title: "Orodomop",
@@ -72,6 +100,7 @@ class TimerModel with ChangeNotifier {
         );
       }
 
+      // Starts the foreground timer.
       ServiceManager.startRelaxTimer(breakTimeRemaining);
       notifyListeners();
     });
@@ -82,27 +111,31 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
   }
 
-  void _resetTimer() {
+  void _resetTimer() async {
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
+    await _prefs.clear(); // Reset sharedpreferences
     notifyListeners();
     ServiceManager.stopService();
   }
 
   void resume() {
-    _startTimer();
+    start();
     notifyListeners();
   }
 
-  void pause() {
+  void pause() async {
     _stopTimer();
     notifyListeners();
+    await saveState(); // save state
   }
 
-  void relax(int x) {
+  void relax(int x) async {
     _stopTimer(); // Stop the timer in case it's running.
     _breakTimeRemaining = (_focusTime / x).round();
+    _focusTime = 0; // reset foucs time.
+    await saveState(); // Save state for break
     _countDownTimer(); // Start countdown timer
     notifyListeners();
   }
