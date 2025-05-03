@@ -43,6 +43,7 @@ class BreakDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
+            style: Theme.of(context).textTheme.bodyMedium,
             controller: controller,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(hintText: 'Enter X'),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/screens/timer_screen.dart';
 import 'package:orodomop/themes/light_theme.dart';
+import 'package:orodomop/themes/dark_theme.dart';
+
 import 'package:provider/provider.dart';
 import 'package:orodomop/models/timer_model.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -65,7 +67,7 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
       routes: {'/': (context) => const TimerScreen()},
       initialRoute: '/',
       title: 'Orodomop',
-      theme: lightTheme(),
+      theme: lightTheme(), //lightTheme(),
     );
   }
 }
