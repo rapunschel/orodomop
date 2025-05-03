@@ -10,18 +10,21 @@ class PauseOrResumeButton extends StatelessWidget {
     return Selector<TimerModel, bool>(
       selector: (context, timerModel) => timerModel.isCounting,
       builder: (context, isCounting, child) {
-        return ElevatedButton(
-          onPressed: () {
-            TimerModel model = context.read<TimerModel>();
+        return SizedBox(
+          width: 102, // Min width of button
+          child: ElevatedButton(
+            onPressed: () {
+              TimerModel model = context.read<TimerModel>();
 
-            if (isCounting) {
-              // Pause
-              model.pause();
-            } else {
-              model.resume();
-            }
-          },
-          child: Text(isCounting ? "Pause" : "Resume"),
+              if (isCounting) {
+                // Pause
+                model.pause();
+              } else {
+                model.resume();
+              }
+            },
+            child: Text(isCounting ? "Pause" : "Resume"),
+          ),
         );
       },
     );

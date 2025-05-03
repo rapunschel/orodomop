@@ -7,12 +7,15 @@ class BreakButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Trigger the dialog to show up
-        _showBreakDialog(context);
-      },
-      child: Text("Break"),
+    return SizedBox(
+      width: 102, // Min width of button
+      child: ElevatedButton(
+        onPressed: () {
+          // Trigger the dialog to show up
+          _showBreakDialog(context);
+        },
+        child: Text("Break"),
+      ),
     );
   }
 
