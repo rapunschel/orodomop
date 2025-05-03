@@ -23,16 +23,7 @@ class NotificationService {
     await notificationPlugin.initialize(initSettings);
   }
 
-  Future<void> restartScheduleBreakNotification(int seconds) async {
-    List<PendingNotificationRequest> pending =
-        await notificationPlugin.pendingNotificationRequests();
-
-    if (pending.isEmpty) {
-      scheduleBreakNotification(NotificationId.scheduledNotif, seconds);
-    }
-  }
-
-  Future<void> scheduleBreakNotification(NotificationId id, int seconds) async {
+  void scheduleBreakNotification(NotificationId id, int seconds) {
     try {
       final scheduledTime = tz.TZDateTime.now(
         tz.local,
@@ -53,7 +44,7 @@ class NotificationService {
             vibrationPattern: Int64List.fromList([0, 500, 1000, 500]),
           ),
         ),
-        androidScheduleMode: AndroidScheduleMode.exact,
+        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
       debugPrint("Notification scheduled successfully.");
     } catch (e) {

@@ -34,8 +34,9 @@ class TimerModel with ChangeNotifier {
       breakTimeRemaining -=
           DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
 
-      // Because somehow the scheduled notif is gone upon app restart
-      NotificationService().restartScheduleBreakNotification(
+      // Limit desync caused by restarts
+      NotificationService().scheduleBreakNotification(
+        NotificationId.scheduledNotif,
         breakTimeRemaining,
       );
     }
@@ -64,6 +65,9 @@ class TimerModel with ChangeNotifier {
       if (_isCounting && _timer != null) {
         return;
       }
+
+      // Cancel in case notif was shown. No longer needed
+      NotificationService().cancelNotification(NotificationId.scheduledNotif);
       _isCounting = true;
       ServiceManager.startService(); // Start the foreground service
 
@@ -124,19 +128,17 @@ class TimerModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void relax(int x) async {
+  void relax(int x) {
     _stopTimer(); // Stop the timer in case it's running.
     _breakTimeRemaining = (_focusTime / x).round();
 
-    // schedule break notification
-
-    await NotificationService().scheduleBreakNotification(
+    NotificationService().scheduleBreakNotification(
       NotificationId.scheduledNotif,
       _breakTimeRemaining,
     );
 
-    _focusTime = 0; // reset foucs time.
-    _countDownTimer(); // Start countdown timer
+    _focusTime = 0;
+    _countDownTimer();
     notifyListeners();
   }
 
