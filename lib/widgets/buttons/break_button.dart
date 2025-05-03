@@ -7,12 +7,15 @@ class BreakButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        // Trigger the dialog to show up
-        _showBreakDialog(context);
-      },
-      child: Text("Break"),
+    return SizedBox(
+      width: 102, // Min width of button
+      child: ElevatedButton(
+        onPressed: () {
+          // Trigger the dialog to show up
+          _showBreakDialog(context);
+        },
+        child: Text("Break"),
+      ),
     );
   }
 
@@ -40,6 +43,7 @@ class BreakDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
+            style: Theme.of(context).textTheme.bodyMedium,
             controller: controller,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(hintText: 'Enter X'),
