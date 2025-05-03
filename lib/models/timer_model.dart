@@ -122,7 +122,7 @@ class TimerModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void pause() async {
+  void pause() {
     _stopTimer();
     ServiceManager.stopService();
     notifyListeners();
