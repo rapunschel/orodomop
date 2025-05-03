@@ -16,7 +16,10 @@ class ToggleThemeButton extends StatelessWidget {
           onPressed: () {
             themeModel.toggleTheme();
           },
-          child: Text(themeModel.isLightTheme ? "Dark mode" : "Light mode"),
+          child: Text(
+            themeModel.isLightTheme ? "Dark mode" : "Light mode",
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         );
       },
     );
