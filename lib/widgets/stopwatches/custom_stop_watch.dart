@@ -16,7 +16,10 @@ class CustomStopWatch extends StatelessWidget {
         return AnimatedGradientBorder(
           borderSize: 3,
           glowSize: 10,
-          gradientColors: [Colors.red, Colors.blue],
+          gradientColors: [
+            Theme.of(context).colorScheme.primary,
+            Theme.of(context).colorScheme.inversePrimary,
+          ],
           borderRadius: BorderRadius.all(Radius.circular(999)),
           child: SizedBox(
             width: 250,
@@ -31,7 +34,7 @@ class CustomStopWatch extends StatelessWidget {
                   StringFormatter.formatTime(time),
                   maxLines: 1,
                   maxFontSize: 68,
-                  style: TextStyle(fontSize: 68),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
             ),
