@@ -21,7 +21,6 @@ class CycleTimer extends StatelessWidget {
         int focusTime = values[0];
         int breakTime = values[1];
         bool isFocusing = values[2];
-        debugPrint("Is focusing: $isFocusing");
         bool isActive = breakTime > 0 || (focusTime > 0 && isFocusing);
         return AnimatedGradientBorder(
           animationProgress: (isActive) ? null : 0,
