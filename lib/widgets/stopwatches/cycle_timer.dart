@@ -25,7 +25,7 @@ class CycleTimer extends StatelessWidget {
         bool isActive = breakTime > 0 || (focusTime > 0 && isFocusing);
         return AnimatedGradientBorder(
           animationProgress: (isActive) ? null : 0,
-          borderSize: 3,
+          borderSize: 4,
           glowSize: 10,
           gradientColors: [
             Theme.of(context).colorScheme.primary,
