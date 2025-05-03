@@ -10,16 +10,21 @@ class CycleTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<TimerModel, List<int>>(
+    return Selector<TimerModel, List<dynamic>>(
       selector:
           (context, timerModel) => [
             timerModel.focusTime,
             timerModel.breakTimeRemaining,
+            timerModel.isCounting,
           ],
       builder: (context, values, child) {
         int focusTime = values[0];
         int breakTime = values[1];
+        bool isFocusing = values[2];
+        debugPrint("Is focusing: $isFocusing");
+        bool isActive = breakTime > 0 || (focusTime > 0 && isFocusing);
         return AnimatedGradientBorder(
+          animationProgress: (isActive) ? null : 0,
           borderSize: 3,
           glowSize: 10,
           gradientColors: [
