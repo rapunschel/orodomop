@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/screens/timer_screen.dart';
 import 'package:orodomop/themes/light_theme.dart';
-import 'package:orodomop/themes/dark_theme.dart';
-
 import 'package:provider/provider.dart';
 import 'package:orodomop/models/timer_model.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -11,6 +9,7 @@ import 'package:orodomop/services/service_manager.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
+import 'package:orodomop/models/theme_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,6 +17,7 @@ void main() async {
   tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
   final timerModel = await TimerModel.create();
+  final ThemeMode = await ThemeModel.create();
   await NotificationService().initNotification();
 
   FlutterForegroundTask.initCommunicationPort();
@@ -61,7 +61,6 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("Restart");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       routes: {'/': (context) => const TimerScreen()},
