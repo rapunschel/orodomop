@@ -20,7 +20,7 @@ class TimerControlRow extends StatelessWidget {
       builder: (context, values, child) {
         int focusTime = values[0];
         int breakTime = values[1];
-        if (focusTime == 0 && breakTime == 0) {
+        if (focusTime == 0 && breakTime <= 0) {
           return StartButton();
         }
 

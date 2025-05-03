@@ -9,14 +9,12 @@ class TimerModel with ChangeNotifier {
   int _breakTimeRemaining;
   bool _isCounting;
   final SharedPreferences _prefs;
-  String _pausedAt; // Keep track when app is sent to background
   Timer? _timer;
   TimerModel._(
     this._focusTime,
     this._breakTimeRemaining,
     this._isCounting,
     this._prefs,
-    this._pausedAt,
   );
 
   // factory constructor to load data.
@@ -25,51 +23,79 @@ class TimerModel with ChangeNotifier {
     int breakTimeRemaining = prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = prefs.getInt("focusTime") ?? 0;
     bool isCounting = prefs.getBool("isCounting") ?? false;
-    String pausedAt = prefs.getString("pausedAt") ?? "";
+    String timestamp = prefs.getString("timestamp") ?? "";
 
-    return TimerModel._(
+    if (timestamp.isEmpty) {
+      // empty, avoid formatexception when calling DateTime.parse
+    } else if (isCounting) {
+      focusTime +=
+          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+    } else if (breakTimeRemaining > 0) {
+      breakTimeRemaining -=
+          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+
+      // Limit desync caused by restarts
+      NotificationService().scheduleBreakNotification(
+        NotificationId.scheduledNotif,
+        breakTimeRemaining,
+      );
+    }
+
+    TimerModel model = TimerModel._(
       focusTime,
       breakTimeRemaining,
       isCounting,
       prefs,
-      pausedAt,
     );
+
+    return model;
   }
 
   Future<void> saveState() async {
     await _prefs.setInt("breakTimeRemaining", _breakTimeRemaining);
     await _prefs.setInt("focusTime", _focusTime);
     await _prefs.setBool("isCounting", _isCounting);
-    await _prefs.setString("pausedAt", _pausedAt);
+    await _prefs.setString("timestamp", DateTime.now().toString());
   }
 
   void start() {
-    _focusTime = 0;
-    _startTimer();
+    try {
+      // Avoid starting new timers, unless neccessary
+      // example: app restart, this ensures timer is started when calling start
+      if (_isCounting && _timer != null) {
+        return;
+      }
+
+      // Cancel in case notif was shown. No longer needed
+      NotificationService().cancelNotification(NotificationId.scheduledNotif);
+      _isCounting = true;
+      ServiceManager.startService(); // Start the foreground service
+
+      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+        _focusTime++;
+        ServiceManager.startFocusTimer(_focusTime);
+        notifyListeners();
+      });
+    } catch (e) {
+      debugPrint("error calling _startTime: $e");
+    }
     notifyListeners();
-    ServiceManager.startService();
   }
 
-  void _startTimer() {
-    if (_isCounting) return; // Avoid starting new timers
-
-    _isCounting = true;
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      _focusTime++;
-      ServiceManager.startFocusTimer(_focusTime);
-      notifyListeners();
-    });
+  void onAppRestart() {
+    if (isCounting) {
+      start();
+    } else if (breakTimeRemaining > 0) {
+      _countDownTimer();
+    }
   }
 
   void _countDownTimer() {
+    ServiceManager.startService();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (--_breakTimeRemaining == 0) {
+      if (--_breakTimeRemaining <= 0) {
         _resetTimer();
-        NotificationService().showNotification(
-          id: 0,
-          title: "Orodomop",
-          body: "Break finished!",
-        );
+        return;
       }
 
       ServiceManager.startRelaxTimer(breakTimeRemaining);
@@ -82,33 +108,43 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
   }
 
-  void _resetTimer() {
+  void _resetTimer() async {
+    await _prefs.clear(); // Reset sharedpreferences
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
-    notifyListeners();
     ServiceManager.stopService();
+    notifyListeners();
   }
 
   void resume() {
-    _startTimer();
+    start();
     notifyListeners();
   }
 
-  void pause() {
+  void pause() async {
     _stopTimer();
+    ServiceManager.stopService();
     notifyListeners();
   }
 
   void relax(int x) {
     _stopTimer(); // Stop the timer in case it's running.
     _breakTimeRemaining = (_focusTime / x).round();
-    _countDownTimer(); // Start countdown timer
+
+    NotificationService().scheduleBreakNotification(
+      NotificationId.scheduledNotif,
+      _breakTimeRemaining,
+    );
+
+    _focusTime = 0;
+    _countDownTimer();
     notifyListeners();
   }
 
   void endBreak() {
     _resetTimer();
+    NotificationService().cancelNotification(NotificationId.scheduledNotif);
   }
 
   get focusTime => _focusTime;
