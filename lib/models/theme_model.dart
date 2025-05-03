@@ -21,6 +21,7 @@ class ThemeModel with ChangeNotifier {
   void toggleTheme() {
     _isLightTheme = !_isLightTheme;
     saveState();
+    notifyListeners();
   }
 
   get isLightTheme => _isLightTheme;

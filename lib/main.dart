@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/screens/timer_screen.dart';
+import 'package:orodomop/themes/dark_theme.dart';
 import 'package:orodomop/themes/light_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/models/timer_model.dart';
@@ -17,13 +18,16 @@ void main() async {
   tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
   final timerModel = await TimerModel.create();
-  final ThemeMode = await ThemeModel.create();
+  final themeModel = await ThemeModel.create();
   await NotificationService().initNotification();
 
   FlutterForegroundTask.initCommunicationPort();
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => timerModel)],
+      providers: [
+        ChangeNotifierProvider(create: (context) => timerModel),
+        ChangeNotifierProvider(create: (context) => themeModel),
+      ],
       child: OrodomopApp(),
     ),
   );
@@ -61,12 +65,17 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      routes: {'/': (context) => const TimerScreen()},
-      initialRoute: '/',
-      title: 'Orodomop',
-      theme: lightTheme(), //lightTheme(),
+    return Selector<ThemeModel, bool>(
+      selector: (context, model) => model.isLightTheme,
+      builder: (context, isLightTheme, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          routes: {'/': (context) => const TimerScreen()},
+          initialRoute: '/',
+          title: 'Orodomop',
+          theme: isLightTheme ? lightTheme() : darkTheme(),
+        );
+      },
     );
   }
 }
