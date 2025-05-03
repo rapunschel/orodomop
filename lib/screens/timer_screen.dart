@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/models/timer_model.dart';
 import 'package:orodomop/widgets/buttons/timer_control_row.dart';
-import 'package:orodomop/widgets/stopwatches/count_down_watch.dart';
-import 'package:orodomop/widgets/stopwatches/custom_stop_watch.dart';
+import 'package:orodomop/widgets/stopwatches/cycle_timer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 
@@ -50,7 +49,7 @@ class _TimerScreenState extends State<TimerScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  breakTime > 0 ? CountDownWatch() : CustomStopWatch(),
+                  CycleTimer(),
                   SizedBox(height: 16),
                   TimerControlRow(),
                 ],

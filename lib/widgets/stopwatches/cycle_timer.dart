@@ -5,14 +5,20 @@ import 'package:provider/provider.dart';
 import 'package:orodomop/models/string_formatter.dart';
 import 'package:glowy_borders/glowy_borders.dart';
 
-class CustomStopWatch extends StatelessWidget {
-  const CustomStopWatch({super.key});
+class CycleTimer extends StatelessWidget {
+  const CycleTimer({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Selector<TimerModel, int>(
-      selector: (context, timerModel) => timerModel.focusTime,
-      builder: (context, time, child) {
+    return Selector<TimerModel, List<int>>(
+      selector:
+          (context, timerModel) => [
+            timerModel.focusTime,
+            timerModel.breakTimeRemaining,
+          ],
+      builder: (context, values, child) {
+        int focusTime = values[0];
+        int breakTime = values[1];
         return AnimatedGradientBorder(
           borderSize: 3,
           glowSize: 10,
@@ -31,7 +37,9 @@ class CustomStopWatch extends StatelessWidget {
               ),
               child: Center(
                 child: AutoSizeText(
-                  StringFormatter.formatTime(time),
+                  StringFormatter.formatTime(
+                    breakTime > 0 ? breakTime : focusTime,
+                  ),
                   maxLines: 1,
                   maxFontSize: 68,
                   style: Theme.of(context).textTheme.titleLarge,
