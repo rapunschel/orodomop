@@ -22,4 +22,6 @@ class ThemeModel with ChangeNotifier {
     _isLightTheme = !_isLightTheme;
     saveState();
   }
+
+  get isLightTheme => _isLightTheme;
 }
