@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/models/timer_model.dart';
-import 'package:orodomop/widgets/buttons/timer_control_row.dart';
+import 'package:orodomop/widgets/control_row/timer_control_row.dart';
 import 'package:orodomop/widgets/buttons/toggle_theme_button.dart';
 import 'package:orodomop/widgets/stopwatches/cycle_timer.dart';
 import 'package:provider/provider.dart';
