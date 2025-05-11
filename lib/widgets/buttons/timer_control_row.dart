@@ -11,27 +11,52 @@ class TimerControlRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<TimerModel, List<int>>(
+    return Selector<TimerModel, List>(
       selector:
           (context, timerModel) => [
             timerModel.focusTime,
             timerModel.breakTimeRemaining,
+            timerModel.isCounting,
           ],
       builder: (context, values, child) {
         int focusTime = values[0];
         int breakTime = values[1];
-        if (focusTime == 0 && breakTime <= 0) {
+        bool isCounting = values[2];
+        if (focusTime == 0 && breakTime <= 0 && !isCounting) {
           return StartButton();
         }
 
         if (breakTime > 0) {
           return EndBreakButton();
         }
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [PauseOrResumeButton(), SizedBox(width: 16), BreakButton()],
+        return Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                PauseOrResumeButton(),
+                SizedBox(width: 16),
+                BreakButton(),
+              ],
+            ),
+            ResetButton(),
+          ],
         );
       },
+    );
+  }
+}
+
+class ResetButton extends StatelessWidget {
+  const ResetButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        context.read<TimerModel>().resetTimer();
+      },
+      child: Text("Reset", style: Theme.of(context).textTheme.bodySmall),
     );
   }
 }
