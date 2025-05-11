@@ -54,7 +54,30 @@ class ResetButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       onPressed: () {
-        context.read<TimerModel>().resetTimer();
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text("Reset timer?"),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    context.read<TimerModel>().resetTimer();
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("Yes"),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("No"),
+                ),
+              ],
+            );
+          },
+        );
+        //
       },
       child: Text("Reset", style: Theme.of(context).textTheme.bodySmall),
     );
