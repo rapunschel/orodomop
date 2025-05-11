@@ -40,13 +40,16 @@ class CycleTimer extends StatelessWidget {
                 color: Theme.of(context).primaryColor,
               ),
               child: Center(
-                child: AutoSizeText(
-                  StringFormatter.formatTime(
-                    breakTime > 0 ? breakTime : focusTime,
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
+                  child: AutoSizeText(
+                    StringFormatter.formatTime(
+                      breakTime > 0 ? breakTime : focusTime,
+                    ),
+                    maxLines: 1,
+                    maxFontSize: 68,
+                    style: Theme.of(context).textTheme.titleLarge,
                   ),
-                  maxLines: 1,
-                  maxFontSize: 68,
-                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
             ),
