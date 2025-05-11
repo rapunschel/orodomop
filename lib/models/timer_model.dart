@@ -58,6 +58,13 @@ class TimerModel with ChangeNotifier {
     await _prefs.setString("timestamp", DateTime.now().toString());
   }
 
+  Future<void> clearPrefs() async {
+    await _prefs.remove("breakTimeRemaining");
+    await _prefs.remove("focusTime");
+    await _prefs.remove("isCounting");
+    await _prefs.remove("timestamp");
+  }
+
   void start() {
     try {
       // Avoid starting new timers, unless neccessary
@@ -94,7 +101,7 @@ class TimerModel with ChangeNotifier {
     ServiceManager.startService();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (--_breakTimeRemaining <= 0) {
-        _resetTimer();
+        resetTimer();
         return;
       }
 
@@ -108,8 +115,8 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
   }
 
-  void _resetTimer() async {
-    await _prefs.clear(); // Reset sharedpreferences
+  void resetTimer() async {
+    await clearPrefs(); // Reset sharedpreferences
     _stopTimer();
     _focusTime = 0;
     _breakTimeRemaining = 0;
@@ -143,10 +150,11 @@ class TimerModel with ChangeNotifier {
   }
 
   void endBreak() {
-    _resetTimer();
+    resetTimer();
     NotificationService().cancelNotification(NotificationId.scheduledNotif);
   }
 
+  get isActive => _isCounting || _focusTime > 0;
   get focusTime => _focusTime;
   get isCounting => _isCounting;
   get breakTimeRemaining => _breakTimeRemaining;

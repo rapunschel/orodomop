@@ -41,27 +41,55 @@ class _TimerScreenState extends State<TimerScreen> {
   @override
   Widget build(BuildContext context) {
     return WithForegroundTask(
-      child: Selector<TimerModel, int>(
-        selector: (context, model) => model.breakTimeRemaining,
-        builder: (context, breakTime, child) {
+      child: Selector<TimerModel, bool>(
+        selector: (context, model) => model.isCounting,
+        builder: (context, _, child) {
           return Scaffold(
-            body: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CycleTimer(),
-                  SizedBox(height: 16),
-                  TimerControlRow(),
-                  SizedBox(height: 8),
-
-                  ToggleThemeButton(),
-                ],
+            body: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            CycleTimer(),
+                            TimerControlRow(),
+                            SizedBox(height: 8),
+                            context.read<TimerModel>().isActive
+                                ? ResetButton()
+                                : SizedBox(),
+                            ToggleThemeButton(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
           );
         },
       ),
+    );
+  }
+}
+
+class ResetButton extends StatelessWidget {
+  const ResetButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextButton(
+      onPressed: () {
+        context.read<TimerModel>().resetTimer();
+      },
+      child: Text("Reset", style: Theme.of(context).textTheme.bodySmall),
     );
   }
 }
