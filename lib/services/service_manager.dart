@@ -72,7 +72,7 @@ class ServiceManager {
         // to be started, as shown in the comment below.
         serviceTypes: [ForegroundServiceTypes.dataSync],
         serviceId: 256,
-        notificationTitle: 'Orodomp is running',
+        notificationTitle: 'Orodomop is running',
         notificationText: 'Tap to return to the app',
         notificationIcon: null,
         /*notificationButtons: [
