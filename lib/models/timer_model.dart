@@ -76,7 +76,7 @@ class TimerModel with ChangeNotifier {
     if (_timerState.isOnFocus) {
       startFocusTimer();
     } else if (_timerState.isOnBreak) {
-      relax(_breakTimeRemaining);
+      startBreakTimer(_breakTimeRemaining);
     }
   }
 
@@ -142,7 +142,7 @@ class TimerModel with ChangeNotifier {
     if (!_timerState.isPaused) return;
 
     if (_breakTimeRemaining > 0 && _focusTime == 0) {
-      return relax(_breakTimeRemaining);
+      return startBreakTimer(_breakTimeRemaining);
     }
 
     startFocusTimer();
@@ -156,7 +156,7 @@ class TimerModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void relax(int x) {
+  void startBreakTimer(int x) {
     _timer?.cancel();
 
     if (_focusTime > 0) {

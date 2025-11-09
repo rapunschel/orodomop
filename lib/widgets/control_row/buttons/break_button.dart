@@ -41,7 +41,7 @@ class BreakDialog extends StatelessWidget {
           Navigator.of(context).pop();
           return;
         }
-        context.read<TimerModel>().relax(x);
+        context.read<TimerModel>().startBreakTimer(x);
       }
       Navigator.of(context).pop();
     }
