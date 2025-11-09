@@ -46,20 +46,20 @@ class TimerModel with ChangeNotifier {
       prefs.getString("timerState"),
     );
 
-    if (timestamp.isEmpty) {
-      // empty, avoid formatexception when calling DateTime.parse
-    } else if (timerState.isOnFocus) {
-      focusTime +=
-          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
-    } else if (timerState.isOnBreak) {
-      breakTimeRemaining -=
-          DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+    if (!timerState.isIdle) {
+      if (timerState.isOnFocus) {
+        focusTime +=
+            DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+      } else if (timerState.isOnBreak) {
+        breakTimeRemaining -=
+            DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
 
-      // Limit desync caused by restarts
-      NotificationService().scheduleBreakNotification(
-        NotificationId.scheduledNotif,
-        breakTimeRemaining,
-      );
+        // Limit desync caused by restarts
+        NotificationService().scheduleBreakNotification(
+          NotificationId.scheduledNotif,
+          breakTimeRemaining,
+        );
+      }
     }
 
     TimerModel model = TimerModel._(
@@ -70,6 +70,14 @@ class TimerModel with ChangeNotifier {
     );
 
     return model;
+  }
+
+  void onAppRestart() {
+    if (_timerState.isOnFocus) {
+      startFocusTimer();
+    } else if (_timerState.isOnBreak) {
+      relax(_breakTimeRemaining);
+    }
   }
 
   Future<void> saveState() async {
@@ -87,35 +95,24 @@ class TimerModel with ChangeNotifier {
   }
 
   void startFocusTimer() {
-    try {
-      // Avoid starting new timers, unless neccessary
-      // example: app restart, this ensures timer is started when calling start
-      if (_timerState.isOnFocus && _timer != null) {
-        return;
-      }
-      _timerState = TimerState.onFocus;
-
-      // Cancel in case notif was shown. No longer needed
-      NotificationService().cancelNotification(NotificationId.scheduledNotif);
-      ServiceManager.startService(); // Start the foreground service
-
-      _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-        _focusTime++;
-        ServiceManager.startFocusTimer(_focusTime);
-        notifyListeners();
-      });
-    } catch (e) {
-      debugPrint("error calling _startTime: $e");
+    // Avoid starting new timers, unless neccessary
+    // example: app restart, this ensures timer is started when calling start
+    if (_timerState.isOnFocus && _timer != null) {
+      return;
     }
+    _timerState = TimerState.onFocus;
+
+    // Cancel in case notif was shown. No longer needed
+    NotificationService().cancelNotification(NotificationId.scheduledNotif);
+    ServiceManager.startService(); // Start the foreground service
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      _focusTime++;
+      ServiceManager.startFocusTimer(_focusTime);
+      notifyListeners();
+    });
+
     notifyListeners();
-  }
-
-  void onAppRestart() {
-    if (_timerState.isOnFocus) {
-      startFocusTimer();
-    } else if (breakTimeRemaining > 0) {
-      _countDownTimer();
-    }
   }
 
   void _countDownTimer() {
@@ -142,7 +139,12 @@ class TimerModel with ChangeNotifier {
   }
 
   void resume() {
-    // TODO Implement logic to check which timer to resume
+    if (!_timerState.isPaused) return;
+
+    if (_breakTimeRemaining > 0 && _focusTime == 0) {
+      return relax(_breakTimeRemaining);
+    }
+
     startFocusTimer();
   }
 
@@ -150,20 +152,23 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
     _timerState = TimerState.paused;
     ServiceManager.stopService();
+    NotificationService().cancelNotification(NotificationId.scheduledNotif);
     notifyListeners();
   }
 
   void relax(int x) {
-    _timer?.cancel(); // Stop the timer in case it's running.
-    _breakTimeRemaining = (_focusTime / x).round();
+    _timer?.cancel();
 
+    if (_focusTime > 0) {
+      _breakTimeRemaining = (_focusTime / x).round();
+      _focusTime = 0;
+    }
+
+    _timerState = TimerState.onBreak;
     NotificationService().scheduleBreakNotification(
       NotificationId.scheduledNotif,
       _breakTimeRemaining,
     );
-
-    _focusTime = 0;
-    _timerState = TimerState.onBreak;
     _countDownTimer();
     notifyListeners();
   }

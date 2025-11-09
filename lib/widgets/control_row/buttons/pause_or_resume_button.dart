@@ -16,9 +16,13 @@ class PauseOrResumeButton extends StatelessWidget {
             onPressed: () {
               TimerModel model = context.read<TimerModel>();
 
-              timerState.isOnFocus ? model.pause() : model.resume();
+              timerState.isOnFocus || timerState.isOnBreak
+                  ? model.pause()
+                  : model.resume();
             },
-            child: Text(timerState.isOnFocus ? "Pause" : "Resume"),
+            child: Text(
+              timerState.isOnFocus || timerState.isOnBreak ? "Pause" : "Resume",
+            ),
           ),
         );
       },

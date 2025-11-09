@@ -23,15 +23,10 @@ class TimerControlRow extends StatelessWidget {
             timerState: timerModel.timerState,
           ),
       builder: (context, values, child) {
-        if (values.focusTime == 0 &&
-            values.breakTime <= 0 &&
-            !values.timerState.isOnFocus) {
+        if (values.timerState.isIdle) {
           return StartButton();
         }
 
-        if (values.breakTime > 0) {
-          return EndBreakButton();
-        }
         return Column(
           children: [
             Row(
@@ -39,10 +34,12 @@ class TimerControlRow extends StatelessWidget {
               children: [
                 PauseOrResumeButton(),
                 SizedBox(width: 16),
-                BreakButton(),
+                values.timerState.isOnBreak ? EndBreakButton() : BreakButton(),
               ],
             ),
-            ResetButton(),
+            values.timerState.isOnFocus || values.timerState.isPaused
+                ? ResetButton()
+                : SizedBox.shrink(),
           ],
         );
       },
