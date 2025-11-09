@@ -108,7 +108,7 @@ class TimerModel with ChangeNotifier {
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
-      ServiceManager.startFocusTimer(_focusTime);
+      ServiceManager.startFocusForegroundTask(_focusTime);
       notifyListeners();
     });
 
@@ -123,7 +123,7 @@ class TimerModel with ChangeNotifier {
         return;
       }
 
-      ServiceManager.startRelaxTimer(breakTimeRemaining);
+      ServiceManager.startBreakForegroundTask(breakTimeRemaining);
       notifyListeners();
     });
   }
