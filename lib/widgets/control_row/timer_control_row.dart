@@ -34,12 +34,10 @@ class TimerControlRow extends StatelessWidget {
               children: [
                 PauseOrResumeButton(),
                 SizedBox(width: 16),
-                values.timerState.isOnBreak ? EndBreakButton() : BreakButton(),
+                values.breakTime > 0 ? EndBreakButton() : BreakButton(),
               ],
             ),
-            values.timerState.isOnFocus || values.timerState.isPaused
-                ? ResetButton()
-                : SizedBox.shrink(),
+            values.breakTime == 0 ? ResetButton() : SizedBox.shrink(),
           ],
         );
       },
