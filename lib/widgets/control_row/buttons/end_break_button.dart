@@ -36,7 +36,7 @@ class EndBreakButton extends StatelessWidget {
   TextButton yesButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        context.read<TimerModel>().endBreak();
+        context.read<TimerModel>().resetTimer();
         Navigator.of(context).pop();
       },
       child: Text("Yes"),
