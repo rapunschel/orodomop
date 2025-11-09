@@ -41,7 +41,7 @@ class TimerControlRow extends StatelessWidget {
                     : BreakButton(),
               ],
             ),
-            values.breakTime == 0 && values.timerState.isOnFocus
+            values.breakTime <= 0 && values.timerState.isOnFocus
                 ? ResetButton()
                 : SizedBox.shrink(),
           ],
