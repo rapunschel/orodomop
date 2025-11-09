@@ -95,37 +95,36 @@ class TimerModel with ChangeNotifier {
   }
 
   void startFocusTimer() {
-    // Avoid starting new timers, unless neccessary
-    // example: app restart, this ensures timer is started when calling start
-    if (_timerState.isOnFocus && _timer != null) {
-      return;
-    }
-    _timerState = TimerState.onFocus;
-
-    // Cancel in case notif was shown. No longer needed
+    _timer?.cancel();
     NotificationService().cancelNotification(NotificationId.scheduledNotif);
-    ServiceManager.startService(); // Start the foreground service
+    _timerState = TimerState.onFocus;
+    ServiceManager.startService();
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
       ServiceManager.startFocusForegroundTask(_focusTime);
       notifyListeners();
     });
-
-    notifyListeners();
   }
 
   void _countDownTimer() {
     ServiceManager.startService();
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (--_breakTimeRemaining <= 0) {
-        resetTimer();
+      if (_breakTimeRemaining-- <= 0) {
+        _endBreak();
         return;
       }
 
       ServiceManager.startBreakForegroundTask(breakTimeRemaining);
       notifyListeners();
     });
+  }
+
+  void _endBreak() async {
+    await clearPrefs();
+    _timerState = TimerState.idle;
+    ServiceManager.stopService();
+    notifyListeners();
   }
 
   void resetTimer() async {
@@ -170,12 +169,6 @@ class TimerModel with ChangeNotifier {
       _breakTimeRemaining,
     );
     _countDownTimer();
-    notifyListeners();
-  }
-
-  void endBreak() {
-    resetTimer();
-    NotificationService().cancelNotification(NotificationId.scheduledNotif);
   }
 
   get focusTime => _focusTime;
