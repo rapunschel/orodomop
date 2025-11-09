@@ -25,7 +25,7 @@ class _TimerScreenState extends State<TimerScreen> {
       // Request permissions and initialize the service.
       ServiceManager.requestPermissions();
       ServiceManager.initService();
-      context.read<TimerModel>().onAppRestart();
+      context.read<TimerModel>().onAppResumed();
     });
   }
 

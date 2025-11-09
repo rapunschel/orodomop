@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/models/timer_state.dart';
 import 'package:orodomop/widgets/control_row/buttons/break_button.dart';
 import 'package:orodomop/widgets/control_row/buttons/end_break_button.dart';
 import 'package:orodomop/widgets/control_row/buttons/pause_or_resume_button.dart';
@@ -12,24 +13,21 @@ class TimerControlRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<TimerModel, List>(
+    return Selector<
+      TimerModel,
+      ({int focusTime, int breakTime, TimerState timerState})
+    >(
       selector:
-          (context, timerModel) => [
-            timerModel.focusTime,
-            timerModel.breakTimeRemaining,
-            timerModel.isCounting,
-          ],
+          (context, timerModel) => (
+            focusTime: timerModel.focusTime,
+            breakTime: timerModel.breakTimeRemaining,
+            timerState: timerModel.timerState,
+          ),
       builder: (context, values, child) {
-        int focusTime = values[0];
-        int breakTime = values[1];
-        bool isCounting = values[2];
-        if (focusTime == 0 && breakTime <= 0 && !isCounting) {
+        if (values.timerState.isIdle) {
           return StartButton();
         }
 
-        if (breakTime > 0) {
-          return EndBreakButton();
-        }
         return Column(
           children: [
             Row(
@@ -37,10 +35,15 @@ class TimerControlRow extends StatelessWidget {
               children: [
                 PauseOrResumeButton(),
                 SizedBox(width: 16),
-                BreakButton(),
+                (values.breakTime > 0 && values.timerState.isIdle) ||
+                        values.timerState.isOnBreak
+                    ? EndBreakButton()
+                    : BreakButton(),
               ],
             ),
-            ResetButton(),
+            values.breakTime <= 0 && values.timerState.isOnFocus
+                ? ResetButton()
+                : SizedBox.shrink(),
           ],
         );
       },

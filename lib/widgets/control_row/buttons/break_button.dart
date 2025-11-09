@@ -8,10 +8,9 @@ class BreakButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 102, // Min width of button
+      width: 102,
       child: ElevatedButton(
         onPressed: () {
-          // Trigger the dialog to show up
           _showBreakDialog(context);
         },
         child: Text("Break"),
@@ -19,7 +18,6 @@ class BreakButton extends StatelessWidget {
     );
   }
 
-  // Function to show the dialog
   void _showBreakDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -38,12 +36,12 @@ class BreakDialog extends StatelessWidget {
     TextEditingController controller = TextEditingController();
     void onSubmitted(dynamic value) {
       if (value.isNotEmpty) {
-        int x = int.tryParse(value) ?? 0; // Default to 1 if invalid
+        int x = int.tryParse(value) ?? 0;
         if (x == 0) {
           Navigator.of(context).pop();
           return;
         }
-        context.read<TimerModel>().relax(x);
+        context.read<TimerModel>().startBreakTimer(x);
       }
       Navigator.of(context).pop();
     }
@@ -74,7 +72,7 @@ class BreakDialog extends StatelessWidget {
         ),
         TextButton(
           onPressed: () {
-            Navigator.of(context).pop(); // Just close the dialog
+            Navigator.of(context).pop();
           },
           child: Text("Cancel"),
         ),
