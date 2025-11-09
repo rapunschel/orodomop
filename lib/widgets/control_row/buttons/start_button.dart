@@ -9,7 +9,7 @@ class StartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        context.read<TimerModel>().start();
+        context.read<TimerModel>().startFocusTimer();
       },
       child: Text("Start"),
     );

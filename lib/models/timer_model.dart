@@ -86,7 +86,7 @@ class TimerModel with ChangeNotifier {
     await _prefs.remove("timerState");
   }
 
-  void start() {
+  void startFocusTimer() {
     try {
       // Avoid starting new timers, unless neccessary
       // example: app restart, this ensures timer is started when calling start
@@ -112,7 +112,7 @@ class TimerModel with ChangeNotifier {
 
   void onAppRestart() {
     if (_timerState.isOnFocus) {
-      start();
+      startFocusTimer();
     } else if (breakTimeRemaining > 0) {
       _countDownTimer();
     }
@@ -143,7 +143,7 @@ class TimerModel with ChangeNotifier {
 
   void resume() {
     // TODO Implement logic to check which timer to resume
-    start();
+    startFocusTimer();
   }
 
   void pause() {
