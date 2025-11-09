@@ -12,22 +12,24 @@ class TimerControlRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<TimerModel, List>(
+    return Selector<
+      TimerModel,
+      ({int focusTime, int breakTime, TimerState timerState})
+    >(
       selector:
-          (context, timerModel) => [
-            timerModel.focusTime,
-            timerModel.breakTimeRemaining,
-            timerModel.isCounting,
-          ],
+          (context, timerModel) => (
+            focusTime: timerModel.focusTime,
+            breakTime: timerModel.breakTimeRemaining,
+            timerState: timerModel.timerState,
+          ),
       builder: (context, values, child) {
-        int focusTime = values[0];
-        int breakTime = values[1];
-        bool isCounting = values[2];
-        if (focusTime == 0 && breakTime <= 0 && !isCounting) {
+        if (values.focusTime == 0 &&
+            values.breakTime <= 0 &&
+            !values.timerState.isOnFocus) {
           return StartButton();
         }
 
-        if (breakTime > 0) {
+        if (values.breakTime > 0) {
           return EndBreakButton();
         }
         return Column(

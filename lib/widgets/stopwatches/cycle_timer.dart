@@ -10,18 +10,19 @@ class CycleTimer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<TimerModel, List<dynamic>>(
+    return Selector<
+      TimerModel,
+      ({int focusTime, int breakTime, TimerState timerState})
+    >(
       selector:
-          (context, timerModel) => [
-            timerModel.focusTime,
-            timerModel.breakTimeRemaining,
-            timerModel.isCounting,
-          ],
+          (context, timerModel) => (
+            focusTime: timerModel.focusTime,
+            breakTime: timerModel.breakTimeRemaining,
+            timerState: timerModel.timerState,
+          ),
       builder: (context, values, child) {
-        int focusTime = values[0];
-        int breakTime = values[1];
-        bool isFocusing = values[2];
-        bool isActive = breakTime > 0 || (focusTime >= 0 && isFocusing);
+        bool isActive =
+            values.timerState.isOnBreak || values.timerState.isOnFocus;
         return AnimatedGradientBorder(
           animationProgress: (isActive) ? null : 0,
           borderSize: 4,
@@ -44,7 +45,9 @@ class CycleTimer extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: AutoSizeText(
                     StringFormatter.formatTime(
-                      breakTime > 0 ? breakTime : focusTime,
+                      values.breakTime > 0
+                          ? values.breakTime
+                          : values.focusTime,
                     ),
                     maxLines: 1,
                     maxFontSize: 68,
