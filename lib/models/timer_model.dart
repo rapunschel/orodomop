@@ -174,7 +174,6 @@ class TimerModel with ChangeNotifier {
   }
 
   get focusTime => _focusTime;
-  get isCounting => _timerState.isOnFocus; // TODO update
   get breakTimeRemaining => _breakTimeRemaining;
   get timerState => _timerState;
 }
