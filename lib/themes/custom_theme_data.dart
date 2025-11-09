@@ -48,7 +48,7 @@ ThemeData customThemeData(
     // Gradient border colors
     colorScheme: gradientColors,
     // Dialog
-    dialogTheme: DialogTheme(
+    dialogTheme: DialogThemeData(
       shadowColor: dialogShadowColor,
       elevation: dialogElevation,
       shape: RoundedRectangleBorder(
