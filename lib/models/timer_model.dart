@@ -103,10 +103,10 @@ class TimerModel with ChangeNotifier {
   }
 
   void _endBreak() async {
-    await clearPrefs();
     _timerState = TimerState.idle;
-    ServiceManager.stopService();
     notifyListeners();
+    ServiceManager.stopService();
+    await clearPrefs();
   }
 
   void resetTimer() async {
