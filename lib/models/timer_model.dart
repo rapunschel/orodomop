@@ -1,27 +1,9 @@
 import 'package:flutter/widgets.dart';
+import 'package:orodomop/models/timer_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/services/notification_service.dart';
-
-enum TimerState {
-  idle,
-  onFocus,
-  onBreak,
-  paused;
-
-  get isOnFocus => this == onFocus;
-  get isIdle => this == idle;
-  get isOnBreak => this == onBreak;
-  get isPaused => this == paused;
-
-  static TimerState fromString(String? timerState) {
-    return TimerState.values.firstWhere(
-      (state) => state.name == timerState,
-      orElse: () => TimerState.idle,
-    );
-  }
-}
 
 class TimerModel with ChangeNotifier {
   final SharedPreferences _prefs;

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/models/timer_state.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/models/string_formatter.dart';
 import 'package:glowy_borders/glowy_borders.dart';
