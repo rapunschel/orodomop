@@ -72,7 +72,7 @@ class TimerModel with ChangeNotifier {
     return model;
   }
 
-  void onAppRestart() {
+  void onAppResumed() {
     if (_timerState.isOnFocus) {
       startFocusTimer();
     } else if (_timerState.isOnBreak) {
