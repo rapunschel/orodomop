@@ -36,9 +36,9 @@ class NotificationService {
         scheduledTime,
         NotificationDetails(
           android: AndroidNotificationDetails(
-            "relax_notifications_channel_id", // Unique ID for the channel
-            "Daily Notifications",
-            channelDescription: 'Relax end notification',
+            "break_notifications_channel_id", // Unique ID for the channel
+            "Push Notifications",
+            channelDescription: 'Push notification.',
             importance: Importance.max,
             priority: Priority.high,
             vibrationPattern: Int64List.fromList([0, 500, 1000, 500]),

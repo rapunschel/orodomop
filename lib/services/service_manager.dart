@@ -43,9 +43,9 @@ class ServiceManager {
     FlutterForegroundTask.init(
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'foreground_service',
-        channelName: 'Foreground Service Notification',
+        channelName: 'Foreground Service Notifications',
         channelDescription:
-            'This notification appears when the foreground service is running.',
+            'Counters', 
         onlyAlertOnce: true,
       ),
       iosNotificationOptions: const IOSNotificationOptions(
