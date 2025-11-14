@@ -38,7 +38,7 @@ ThemeData darkTheme() {
   Color timerTextColor = Colors.white;
 
   // Not the main use of colorScheme but works for the gradients
-  ColorScheme gradientColors = ColorScheme.light(
+  ColorScheme gradientColors = ColorScheme.dark(
     primary: Colors.red,
     inversePrimary: Colors.white,
   );

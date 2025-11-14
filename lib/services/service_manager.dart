@@ -95,11 +95,11 @@ class ServiceManager {
 
   // Sending
 
-  static void startFocusTimer(int time) {
+  static void startFocusForegroundTask(int time) {
     FlutterForegroundTask.sendDataToTask([TimerHandler.focus, time]);
   }
 
-  static void startRelaxTimer(int time) {
+  static void startBreakForegroundTask(int time) {
     FlutterForegroundTask.sendDataToTask([TimerHandler.relax, time]);
   }
 }

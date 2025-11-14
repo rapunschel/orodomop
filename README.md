@@ -13,3 +13,4 @@ Written in Flutter for Android 5+ (hopefully).
 - unstoppable: even if your phone dies, this app will keep counting
 - light and dark mode
 - customizable break duration
+- Break-on-break, in case you ever feel like taking a break from the break.
