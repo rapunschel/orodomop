@@ -35,12 +35,6 @@ class TimerModel with ChangeNotifier {
       } else if (timerState.isOnBreak) {
         breakTimeRemaining -=
             DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
-
-        // Limit desync caused by restarts
-        NotificationService().scheduleBreakNotification(
-          NotificationId.breakOver,
-          breakTimeRemaining,
-        );
       }
     }
 
