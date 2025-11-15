@@ -24,7 +24,8 @@ class TimerControlRow extends StatelessWidget {
             timerState: timerModel.timerState,
           ),
       builder: (context, values, child) {
-        if (values.timerState.isIdle) {
+        if (values.timerState.isIdle ||
+            values.timerState.isOnBreak && values.breakTime == 0) {
           return StartButton();
         }
 
