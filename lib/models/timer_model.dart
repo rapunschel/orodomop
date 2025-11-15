@@ -106,6 +106,7 @@ class TimerModel with ChangeNotifier {
     _focusTime = 0;
     _breakTimeRemaining = 0;
     _timerState = TimerState.idle;
+    NotificationService().cancelNotification(NotificationId.scheduledNotif);
     ServiceManager.stopService();
     notifyListeners();
   }
