@@ -72,8 +72,7 @@ class TimerModel with ChangeNotifier {
 
   void startFocusTimer() {
     _timer?.cancel();
-    _timerState = TimerState.onFocus;
-    notifyListeners();
+    _setState(TimerState.onFocus);
 
     Future(() {
       NotificationService().cancelNotification(NotificationId.breakOver);
@@ -87,7 +86,7 @@ class TimerModel with ChangeNotifier {
     });
   }
 
-  void _endBreak() async {
+  void _finishBreak() async {
     _timerState = TimerState.idle;
     notifyListeners();
     ServiceManager.stopService();
@@ -99,10 +98,13 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
     _focusTime = 0;
     _breakTimeRemaining = 0;
-    _timerState = TimerState.idle;
-    NotificationService().cancelNotification(NotificationId.breakOver);
-    ServiceManager.stopService();
-    notifyListeners();
+
+    Future(() {
+      NotificationService().cancelNotification(NotificationId.breakOver);
+      ServiceManager.stopService();
+    });
+
+    _setState(TimerState.idle);
   }
 
   void resume() {
@@ -117,10 +119,9 @@ class TimerModel with ChangeNotifier {
 
   void pause() {
     _timer?.cancel();
-    _timerState = TimerState.paused;
     ServiceManager.stopService();
     NotificationService().cancelNotification(NotificationId.breakOver);
-    notifyListeners();
+    _setState(TimerState.paused);
   }
 
   void startBreakTimer(int x) {
@@ -130,8 +131,8 @@ class TimerModel with ChangeNotifier {
       _breakTimeRemaining = (_focusTime / x).round();
       _focusTime = 0;
     }
-    _timerState = TimerState.onBreak;
-    notifyListeners();
+
+    _setState(TimerState.onBreak);
 
     Future(() {
       NotificationService().scheduleBreakNotification(
@@ -143,12 +144,17 @@ class TimerModel with ChangeNotifier {
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (_breakTimeRemaining-- <= 0) {
-        _endBreak();
+        _finishBreak();
         return;
       }
       notifyListeners();
       ServiceManager.startBreakForegroundTask(_breakTimeRemaining);
     });
+  }
+
+  void _setState(TimerState state, {bool notify = true}) {
+    _timerState = state;
+    if (notify) notifyListeners();
   }
 
   get focusTime => _focusTime;
