@@ -35,12 +35,6 @@ class TimerModel with ChangeNotifier {
       } else if (timerState.isOnBreak) {
         breakTimeRemaining -=
             DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
-
-        // Limit desync caused by restarts
-        NotificationService().scheduleBreakNotification(
-          NotificationId.scheduledNotif,
-          breakTimeRemaining,
-        );
       }
     }
 
@@ -78,9 +72,12 @@ class TimerModel with ChangeNotifier {
 
   void startFocusTimer() {
     _timer?.cancel();
-    NotificationService().cancelNotification(NotificationId.scheduledNotif);
-    _timerState = TimerState.onFocus;
-    ServiceManager.startService();
+    _setState(TimerState.onFocus);
+
+    Future(() {
+      NotificationService().cancelNotification(NotificationId.breakOver);
+      ServiceManager.startService();
+    });
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
@@ -89,20 +86,7 @@ class TimerModel with ChangeNotifier {
     });
   }
 
-  void _countDownTimer() {
-    ServiceManager.startService();
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_breakTimeRemaining-- <= 0) {
-        _endBreak();
-        return;
-      }
-
-      ServiceManager.startBreakForegroundTask(breakTimeRemaining);
-      notifyListeners();
-    });
-  }
-
-  void _endBreak() async {
+  void _finishBreak() async {
     _timerState = TimerState.idle;
     notifyListeners();
     ServiceManager.stopService();
@@ -114,9 +98,13 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
     _focusTime = 0;
     _breakTimeRemaining = 0;
-    _timerState = TimerState.idle;
-    ServiceManager.stopService();
-    notifyListeners();
+
+    Future(() {
+      NotificationService().cancelNotification(NotificationId.breakOver);
+      ServiceManager.stopService();
+    });
+
+    _setState(TimerState.idle);
   }
 
   void resume() {
@@ -131,10 +119,9 @@ class TimerModel with ChangeNotifier {
 
   void pause() {
     _timer?.cancel();
-    _timerState = TimerState.paused;
     ServiceManager.stopService();
-    NotificationService().cancelNotification(NotificationId.scheduledNotif);
-    notifyListeners();
+    NotificationService().cancelNotification(NotificationId.breakOver);
+    _setState(TimerState.paused);
   }
 
   void startBreakTimer(int x) {
@@ -145,12 +132,29 @@ class TimerModel with ChangeNotifier {
       _focusTime = 0;
     }
 
-    _timerState = TimerState.onBreak;
-    NotificationService().scheduleBreakNotification(
-      NotificationId.scheduledNotif,
-      _breakTimeRemaining,
-    );
-    _countDownTimer();
+    _setState(TimerState.onBreak);
+
+    Future(() {
+      NotificationService().scheduleBreakNotification(
+        NotificationId.breakOver,
+        _breakTimeRemaining,
+      );
+      ServiceManager.startService();
+    });
+
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
+      if (_breakTimeRemaining-- <= 0) {
+        _finishBreak();
+        return;
+      }
+      notifyListeners();
+      ServiceManager.startBreakForegroundTask(_breakTimeRemaining);
+    });
+  }
+
+  void _setState(TimerState state, {bool notify = true}) {
+    _timerState = state;
+    if (notify) notifyListeners();
   }
 
   get focusTime => _focusTime;
