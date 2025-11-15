@@ -3,7 +3,7 @@ import 'package:orodomop/screens/timer_screen.dart';
 import 'package:orodomop/themes/dark_theme.dart';
 import 'package:orodomop/themes/light_theme.dart';
 import 'package:provider/provider.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:orodomop/services/notification_service.dart';
 import 'package:orodomop/services/service_manager.dart';
@@ -17,7 +17,7 @@ void main() async {
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
-  final timerModel = await TimerModel.create();
+  final timerModel = await TimerProvider.create();
   final themeModel = await ThemeModel.create();
   await NotificationService().initNotification();
 
@@ -57,11 +57,11 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused) {
-      await context.read<TimerModel>().saveState();
+      await context.read<TimerProvider>().saveState();
     } else if (state == AppLifecycleState.detached) {
       ServiceManager.stopService();
     } else if (state == AppLifecycleState.resumed) {
-      context.read<TimerModel>().onAppResumed();
+      context.read<TimerProvider>().onAppResumed();
     }
   }
 

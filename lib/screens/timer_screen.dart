@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/services/service_manager.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/widgets/control_row/timer_control_row.dart';
 import 'package:orodomop/widgets/buttons/toggle_theme_button.dart';
 import 'package:orodomop/widgets/stopwatches/cycle_timer.dart';
@@ -25,7 +25,7 @@ class _TimerScreenState extends State<TimerScreen> {
       // Request permissions and initialize the service.
       ServiceManager.requestPermissions();
       ServiceManager.initService();
-      context.read<TimerModel>().onAppResumed();
+      context.read<TimerProvider>().onAppResumed();
     });
   }
 

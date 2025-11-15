@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 
 class BreakButton extends StatelessWidget {
   const BreakButton({super.key});
@@ -41,7 +41,7 @@ class BreakDialog extends StatelessWidget {
           Navigator.of(context).pop();
           return;
         }
-        context.read<TimerModel>().startBreakTimer(x);
+        context.read<TimerProvider>().startBreakTimer(x);
       }
       Navigator.of(context).pop();
     }

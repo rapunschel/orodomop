@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:provider/provider.dart';
 
 class EndBreakButton extends StatelessWidget {
@@ -39,7 +39,7 @@ class EndBreakButton extends StatelessWidget {
   TextButton yesButton(BuildContext context) {
     return TextButton(
       onPressed: () {
-        context.read<TimerModel>().resetTimer();
+        context.read<TimerProvider>().resetTimer();
         Navigator.of(context).pop();
       },
       child: Text("Yes"),

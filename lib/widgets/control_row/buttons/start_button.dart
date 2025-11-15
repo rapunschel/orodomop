@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:provider/provider.dart';
 
 class StartButton extends StatelessWidget {
@@ -9,7 +9,7 @@ class StartButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
-        context.read<TimerModel>().startFocusTimer();
+        context.read<TimerProvider>().startFocusTimer();
       },
       child: Text("Start"),
     );

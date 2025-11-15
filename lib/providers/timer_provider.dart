@@ -5,21 +5,21 @@ import 'dart:async';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/services/notification_service.dart';
 
-class TimerModel with ChangeNotifier {
+class TimerProvider with ChangeNotifier {
   final SharedPreferences _prefs;
   int _focusTime;
   int _breakTimeRemaining;
   Timer? _timer;
   TimerState _timerState;
 
-  TimerModel._(
+  TimerProvider._(
     this._focusTime,
     this._breakTimeRemaining,
     this._timerState,
     this._prefs,
   );
 
-  static Future<TimerModel> create() async {
+  static Future<TimerProvider> create() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     int breakTimeRemaining = prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = prefs.getInt("focusTime") ?? 0;
@@ -38,7 +38,7 @@ class TimerModel with ChangeNotifier {
       }
     }
 
-    TimerModel model = TimerModel._(
+    TimerProvider model = TimerProvider._(
       focusTime,
       breakTimeRemaining,
       timerState,
