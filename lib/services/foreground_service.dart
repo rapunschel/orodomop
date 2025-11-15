@@ -13,7 +13,7 @@ class TimerHandler extends TaskHandler {
   static const String focus = 'Focusing';
   static const String relax = 'Break';
 
-  void _focusTime(int time) {
+  void _showFocusNotification(int time) {
     // Update notification content.
     FlutterForegroundTask.updateService(
       notificationTitle: 'Focusing',
@@ -21,13 +21,13 @@ class TimerHandler extends TaskHandler {
     );
 
     // Send data to main isolate.
-    FlutterForegroundTask.sendDataToMain(time);
+    // FlutterForegroundTask.sendDataToMain(time);
   }
 
-  void _relaxTime(int time) {
+  void _showBreakNotification(int time) {
     // Update notification content.
     FlutterForegroundTask.updateService(
-      notificationTitle: 'RELAX',
+      notificationTitle: 'Break',
       notificationText: StringFormatter.formatTime(time),
     );
 
@@ -61,9 +61,9 @@ class TimerHandler extends TaskHandler {
 
     // TODO do it better.
     if (list[0] == focus) {
-      _focusTime((list[1] is int) ? list[1] : 0);
+      _showFocusNotification((list[1] is int) ? list[1] : 0);
     } else if (list[0] == relax) {
-      _relaxTime((list[1] is int) ? list[1] : 0);
+      _showBreakNotification((list[1] is int) ? list[1] : 0);
     }
   }
 
