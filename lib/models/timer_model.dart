@@ -38,7 +38,7 @@ class TimerModel with ChangeNotifier {
 
         // Limit desync caused by restarts
         NotificationService().scheduleBreakNotification(
-          NotificationId.scheduledNotif,
+          NotificationId.breakOver,
           breakTimeRemaining,
         );
       }
@@ -82,7 +82,7 @@ class TimerModel with ChangeNotifier {
     notifyListeners();
 
     Future(() {
-      NotificationService().cancelNotification(NotificationId.scheduledNotif);
+      NotificationService().cancelNotification(NotificationId.breakOver);
       ServiceManager.startService();
     });
 
@@ -106,7 +106,7 @@ class TimerModel with ChangeNotifier {
     _focusTime = 0;
     _breakTimeRemaining = 0;
     _timerState = TimerState.idle;
-    NotificationService().cancelNotification(NotificationId.scheduledNotif);
+    NotificationService().cancelNotification(NotificationId.breakOver);
     ServiceManager.stopService();
     notifyListeners();
   }
@@ -125,7 +125,7 @@ class TimerModel with ChangeNotifier {
     _timer?.cancel();
     _timerState = TimerState.paused;
     ServiceManager.stopService();
-    NotificationService().cancelNotification(NotificationId.scheduledNotif);
+    NotificationService().cancelNotification(NotificationId.breakOver);
     notifyListeners();
   }
 
@@ -141,7 +141,7 @@ class TimerModel with ChangeNotifier {
 
     Future(() {
       NotificationService().scheduleBreakNotification(
-        NotificationId.scheduledNotif,
+        NotificationId.breakOver,
         _breakTimeRemaining,
       );
       ServiceManager.startService();

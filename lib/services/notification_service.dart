@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:async';
 
 enum NotificationId {
-  scheduledNotif(2);
+  breakOver(1);
 
   final int value;
   const NotificationId(this.value);
