@@ -11,8 +11,8 @@ class PauseOrResumeButton extends StatelessWidget {
     return Selector<TimerModel, TimerState>(
       selector: (context, timerModel) => timerModel.timerState,
       builder: (context, timerState, child) {
-        return SizedBox(
-          width: 102, // Min width of button
+        return ConstrainedBox(
+          constraints: BoxConstraints(minWidth: 100),
           child: ElevatedButton(
             onPressed: () {
               TimerModel model = context.read<TimerModel>();
@@ -23,6 +23,7 @@ class PauseOrResumeButton extends StatelessWidget {
             },
             child: Text(
               timerState.isOnFocus || timerState.isOnBreak ? "Pause" : "Resume",
+              softWrap: false,
             ),
           ),
         );

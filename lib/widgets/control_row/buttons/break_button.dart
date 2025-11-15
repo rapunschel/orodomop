@@ -7,8 +7,8 @@ class BreakButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 102,
+    return ConstrainedBox(
+      constraints: BoxConstraints(minWidth: 100),
       child: ElevatedButton(
         onPressed: () {
           _showBreakDialog(context);

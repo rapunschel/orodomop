@@ -7,20 +7,23 @@ class EndBreakButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text("End your break early?"),
-              actions: [noButton(context), yesButton(context)],
-            );
-          },
-        );
-        //
-      },
-      child: Text("Stop"),
+    return ConstrainedBox(
+      constraints: BoxConstraints(minWidth: 80),
+      child: ElevatedButton(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text("End your break early?"),
+                actions: [noButton(context), yesButton(context)],
+              );
+            },
+          );
+          //
+        },
+        child: Text("Stop"),
+      ),
     );
   }
 
