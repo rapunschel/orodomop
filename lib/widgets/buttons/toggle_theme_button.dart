@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/theme_model.dart';
+import 'package:orodomop/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class ToggleThemeButton extends StatelessWidget {
@@ -7,9 +7,9 @@ class ToggleThemeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeModel themeModel = context.read<ThemeModel>();
+    ThemeProvider themeModel = context.read<ThemeProvider>();
 
-    return Selector<ThemeModel, bool>(
+    return Selector<ThemeProvider, bool>(
       selector: (context, model) => model.isLightTheme,
       builder: (context, isLightTheme, child) {
         return TextButton(

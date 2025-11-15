@@ -10,7 +10,7 @@ import 'package:orodomop/services/service_manager.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:orodomop/models/theme_model.dart';
+import 'package:orodomop/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,7 +18,7 @@ void main() async {
   tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
   final timerModel = await TimerProvider.create();
-  final themeModel = await ThemeModel.create();
+  final themeModel = await ThemeProvider.create();
   await NotificationService().initNotification();
 
   FlutterForegroundTask.initCommunicationPort();
@@ -67,7 +67,7 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ThemeModel, bool>(
+    return Selector<ThemeProvider, bool>(
       selector: (context, model) => model.isLightTheme,
       builder: (context, isLightTheme, child) {
         return MaterialApp(
