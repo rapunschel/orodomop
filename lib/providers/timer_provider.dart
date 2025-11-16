@@ -212,5 +212,5 @@ abstract class ChronoCycle {
 
   get focusTime => _focusTime;
   get breakTimeRemaining => _breakTimeRemaining;
-  get timerState => _timerState;
+  TimerState get timerState => _timerState;
 }
