@@ -1,9 +1,9 @@
 # Todo
 
-- [ ] Refactor code & project structure
+- [x] Refactor code & project structure
   - [x] Separate logic from timerprovider into ChronoCycle + subclass
-  - [ ] Extract notifiction functionality into NotificationHandler
-  - [ ] Improve project Structure
+  - [x] Extract notifiction functionality into NotificationHandler
+  - [x] Improve project Structure
 - [ ] Settings Page
   - [ ] Triple Tap brings up settings
     - [ ] Toggle visible settings icon
