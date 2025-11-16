@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/models/timer_state.dart';
 import 'package:provider/provider.dart';
 
@@ -8,14 +8,14 @@ class PauseOrResumeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<TimerModel, TimerState>(
+    return Selector<TimerProvider, TimerState>(
       selector: (context, timerModel) => timerModel.timerState,
       builder: (context, timerState, child) {
         return ConstrainedBox(
           constraints: BoxConstraints(minWidth: 100),
           child: ElevatedButton(
             onPressed: () {
-              TimerModel model = context.read<TimerModel>();
+              TimerProvider model = context.read<TimerProvider>();
 
               timerState.isOnFocus || timerState.isOnBreak
                   ? model.pause()

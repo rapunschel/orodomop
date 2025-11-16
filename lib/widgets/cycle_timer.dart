@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/models/timer_state.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/models/string_formatter.dart';
@@ -12,7 +12,7 @@ class CycleTimer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<
-      TimerModel,
+      TimerProvider,
       ({int focusTime, int breakTime, TimerState timerState})
     >(
       selector:

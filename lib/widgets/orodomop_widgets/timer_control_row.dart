@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/models/timer_state.dart';
-import 'package:orodomop/widgets/control_row/buttons/break_button.dart';
-import 'package:orodomop/widgets/control_row/buttons/end_break_button.dart';
-import 'package:orodomop/widgets/control_row/buttons/pause_or_resume_button.dart';
-import 'package:orodomop/widgets/control_row/buttons/reset_button.dart';
-import 'package:orodomop/widgets/control_row/buttons/start_button.dart';
+import 'package:orodomop/widgets/orodomop_widgets/break_button.dart';
+import 'package:orodomop/widgets/buttons/end_break_button.dart';
+import 'package:orodomop/widgets/buttons/pause_or_resume_button.dart';
+import 'package:orodomop/widgets/buttons/reset_button.dart';
+import 'package:orodomop/widgets/buttons/start_button.dart';
 import 'package:provider/provider.dart';
 
 class TimerControlRow extends StatelessWidget {
@@ -14,7 +14,7 @@ class TimerControlRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Selector<
-      TimerModel,
+      TimerProvider,
       ({int focusTime, int breakTime, TimerState timerState})
     >(
       selector:

@@ -2,16 +2,16 @@ import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
-class ThemeModel with ChangeNotifier {
+class ThemeProvider with ChangeNotifier {
   bool _isLightTheme;
   final SharedPreferences _prefs;
 
-  ThemeModel._(this._isLightTheme, this._prefs);
+  ThemeProvider._(this._isLightTheme, this._prefs);
 
-  static Future<ThemeModel> create() async {
+  static Future<ThemeProvider> create() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLightTheme = prefs.getBool("isLightTheme") ?? true;
-    return ThemeModel._(isLightTheme, prefs);
+    bool isLightTheme = prefs.getBool("isLightTheme") ?? false;
+    return ThemeProvider._(isLightTheme, prefs);
   }
 
   Future<void> saveState() async {

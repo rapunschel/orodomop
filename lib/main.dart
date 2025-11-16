@@ -3,22 +3,22 @@ import 'package:orodomop/screens/timer_screen.dart';
 import 'package:orodomop/themes/dark_theme.dart';
 import 'package:orodomop/themes/light_theme.dart';
 import 'package:provider/provider.dart';
-import 'package:orodomop/models/timer_model.dart';
+import 'package:orodomop/providers/timer_provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:orodomop/services/notification_service.dart';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
-import 'package:orodomop/models/theme_model.dart';
+import 'package:orodomop/providers/theme_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
-  final timerModel = await TimerModel.create();
-  final themeModel = await ThemeModel.create();
+  final timerModel = await TimerProvider.create();
+  final themeModel = await ThemeProvider.create();
   await NotificationService().initNotification();
 
   FlutterForegroundTask.initCommunicationPort();
@@ -57,17 +57,17 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     if (state == AppLifecycleState.paused) {
-      await context.read<TimerModel>().saveState();
+      await context.read<TimerProvider>().saveState();
     } else if (state == AppLifecycleState.detached) {
       ServiceManager.stopService();
     } else if (state == AppLifecycleState.resumed) {
-      context.read<TimerModel>().onAppResumed();
+      context.read<TimerProvider>().onAppResumed();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Selector<ThemeModel, bool>(
+    return Selector<ThemeProvider, bool>(
       selector: (context, model) => model.isLightTheme,
       builder: (context, isLightTheme, child) {
         return MaterialApp(
