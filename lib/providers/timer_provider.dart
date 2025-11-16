@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/widgets.dart';
 import 'package:orodomop/models/timer_state.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,6 +39,7 @@ class TimerProvider with ChangeNotifier {
       timerState,
       onStateChanged: model.notifyListeners,
       clearPrefsCallback: model.clearPrefs,
+      notificationHandler: NotificationHandler(),
     );
 
     return model;
@@ -94,6 +97,7 @@ class Orodomop extends ChronoCycle {
     super._timerState, {
     required super.onStateChanged,
     required super.clearPrefsCallback,
+    required super.notificationHandler,
   });
 
   @override
@@ -101,14 +105,12 @@ class Orodomop extends ChronoCycle {
     _timer?.cancel();
     _setState(TimerState.onFocus);
 
-    Future(() {
-      NotificationService().cancelNotification(NotificationId.breakOver);
-      ServiceManager.startService();
-    });
+    _notificationHandler.cancelBreakPushNotification();
+    _notificationHandler.startForegroundService();
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
-      ServiceManager.startFocusForegroundTask(_focusTime);
+      _notificationHandler.startFocusForegroundTask(_focusTime);
       _onStateChanged();
     });
   }
@@ -124,23 +126,19 @@ class Orodomop extends ChronoCycle {
 
     _setState(TimerState.onBreak);
 
-    Future(() {
-      NotificationService().scheduleBreakNotification(
-        NotificationId.breakOver,
-        _breakTimeRemaining,
-      );
-      ServiceManager.startService();
-    });
+    _notificationHandler.scheduleBreakOverNotification(_breakTimeRemaining);
+    _notificationHandler.startForegroundService();
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (_breakTimeRemaining-- <= 0) {
         _setState(TimerState.idle);
-        ServiceManager.stopService();
+        _notificationHandler.stopForegroundTask();
         await _clearPrefsCallback();
         return;
       }
+
       _onStateChanged.call();
-      ServiceManager.startBreakForegroundTask(_breakTimeRemaining);
+      _notificationHandler.startBreakForegroundTask(_breakTimeRemaining);
     });
   }
 }
@@ -151,6 +149,7 @@ abstract class ChronoCycle {
   Timer? _timer;
   final Function _onStateChanged;
   final Future<void> Function() _clearPrefsCallback;
+  final NotificationHandler _notificationHandler;
   TimerState _timerState;
 
   ChronoCycle(
@@ -159,8 +158,10 @@ abstract class ChronoCycle {
     this._timerState, {
     required Function onStateChanged,
     required Future<void> Function() clearPrefsCallback,
+    required NotificationHandler notificationHandler,
   }) : _clearPrefsCallback = clearPrefsCallback,
-       _onStateChanged = onStateChanged;
+       _onStateChanged = onStateChanged,
+       _notificationHandler = notificationHandler;
 
   void onAppResumed() {
     if (_timerState.isOnFocus) {
@@ -186,23 +187,19 @@ abstract class ChronoCycle {
 
   void pause() {
     _timer?.cancel();
-    ServiceManager.stopService();
-    NotificationService().cancelNotification(NotificationId.breakOver);
+    _notificationHandler.stopForegroundTask();
+    _notificationHandler.cancelBreakPushNotification();
     _setState(TimerState.paused);
   }
 
   void resetTimer() async {
-    await _clearPrefsCallback();
     _timer?.cancel();
     _focusTime = 0;
     _breakTimeRemaining = 0;
-
-    Future(() {
-      NotificationService().cancelNotification(NotificationId.breakOver);
-      ServiceManager.stopService();
-    });
-
+    _notificationHandler.stopForegroundTask();
+    _notificationHandler.cancelBreakPushNotification();
     _setState(TimerState.idle);
+    await _clearPrefsCallback();
   }
 
   void _setState(TimerState state, {bool notify = true}) {
@@ -213,4 +210,33 @@ abstract class ChronoCycle {
   get focusTime => _focusTime;
   get breakTimeRemaining => _breakTimeRemaining;
   TimerState get timerState => _timerState;
+}
+
+class NotificationHandler {
+  Future<void> scheduleBreakOverNotification(int time) async {
+    NotificationService().scheduleBreakNotification(
+      NotificationId.breakOver,
+      time,
+    );
+  }
+
+  Future<void> startFocusForegroundTask(int time) async {
+    ServiceManager.startFocusForegroundTask(time);
+  }
+
+  Future<void> startBreakForegroundTask(int time) async {
+    ServiceManager.startBreakForegroundTask(time);
+  }
+
+  Future<void> startForegroundService() async {
+    ServiceManager.startService();
+  }
+
+  Future<void> stopForegroundTask() async {
+    ServiceManager.stopService();
+  }
+
+  Future<void> cancelBreakPushNotification() async {
+    NotificationService().cancelNotification(NotificationId.breakOver);
+  }
 }
