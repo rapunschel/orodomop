@@ -7,17 +7,8 @@ import 'package:orodomop/services/notification_service.dart';
 
 class TimerProvider with ChangeNotifier {
   final SharedPreferences _prefs;
-  int _focusTime;
-  int _breakTimeRemaining;
-  Timer? _timer;
-  TimerState _timerState;
-
-  TimerProvider._(
-    this._focusTime,
-    this._breakTimeRemaining,
-    this._timerState,
-    this._prefs,
-  );
+  ChronoCycle? _timeManager;
+  TimerProvider._(this._prefs);
 
   static Future<TimerProvider> create() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -38,29 +29,24 @@ class TimerProvider with ChangeNotifier {
       }
     }
 
-    TimerProvider model = TimerProvider._(
+    TimerProvider model = TimerProvider._(prefs);
+
+    model.timeManager = Orodomop(
       focusTime,
       breakTimeRemaining,
       timerState,
-      prefs,
+      onStateChanged: model.notifyListeners,
+      clearPrefsCallback: model.clearPrefs,
     );
 
     return model;
   }
 
-  void onAppResumed() {
-    if (_timerState.isOnFocus) {
-      startFocusTimer();
-    } else if (_timerState.isOnBreak) {
-      startBreakTimer(_breakTimeRemaining);
-    }
-  }
-
   Future<void> saveState() async {
-    await _prefs.setInt("breakTimeRemaining", _breakTimeRemaining);
-    await _prefs.setInt("focusTime", _focusTime);
+    await _prefs.setInt("breakTimeRemaining", _timeManager!.breakTimeRemaining);
+    await _prefs.setInt("focusTime", _timeManager!.focusTime);
     await _prefs.setString("timestamp", DateTime.now().toString());
-    await _prefs.setString("timerState", _timerState.name);
+    await _prefs.setString("timerState", _timeManager!.timerState.name);
   }
 
   Future<void> clearPrefs() async {
@@ -70,6 +56,47 @@ class TimerProvider with ChangeNotifier {
     await _prefs.remove("timerState");
   }
 
+  void onAppResumed() {
+    _timeManager!.onAppResumed();
+  }
+
+  void startFocusTimer() {
+    _timeManager!.startFocusTimer();
+  }
+
+  void startBreakTimer(int value) {
+    _timeManager!.startBreakTimer(value);
+  }
+
+  void resetTimer() {
+    _timeManager!.resetTimer();
+  }
+
+  void resume() {
+    _timeManager!.resume();
+  }
+
+  void pause() {
+    _timeManager!.pause();
+  }
+
+  set timeManager(ChronoCycle timer) => _timeManager = timer;
+
+  get focusTime => _timeManager!.focusTime;
+  get breakTimeRemaining => _timeManager!.breakTimeRemaining;
+  get timerState => _timeManager!.timerState;
+}
+
+class Orodomop extends ChronoCycle {
+  Orodomop(
+    super._focusTime,
+    super._breakTimeRemaining,
+    super._timerState, {
+    required super.onStateChanged,
+    required super.clearPrefsCallback,
+  });
+
+  @override
   void startFocusTimer() {
     _timer?.cancel();
     _setState(TimerState.onFocus);
@@ -82,30 +109,70 @@ class TimerProvider with ChangeNotifier {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       _focusTime++;
       ServiceManager.startFocusForegroundTask(_focusTime);
-      notifyListeners();
+      _onStateChanged();
     });
   }
 
-  void _finishBreak() async {
-    _timerState = TimerState.idle;
-    notifyListeners();
-    ServiceManager.stopService();
-    await clearPrefs();
-  }
-
-  void resetTimer() async {
-    await clearPrefs();
+  @override
+  void startBreakTimer(int value) {
     _timer?.cancel();
-    _focusTime = 0;
-    _breakTimeRemaining = 0;
+
+    if (_focusTime > 0) {
+      _breakTimeRemaining = (_focusTime / value).round();
+      _focusTime = 0;
+    }
+
+    _setState(TimerState.onBreak);
 
     Future(() {
-      NotificationService().cancelNotification(NotificationId.breakOver);
-      ServiceManager.stopService();
+      NotificationService().scheduleBreakNotification(
+        NotificationId.breakOver,
+        _breakTimeRemaining,
+      );
+      ServiceManager.startService();
     });
 
-    _setState(TimerState.idle);
+    _timer = Timer.periodic(Duration(seconds: 1), (timer) async {
+      if (_breakTimeRemaining-- <= 0) {
+        _setState(TimerState.idle);
+        ServiceManager.stopService();
+        await _clearPrefsCallback();
+        return;
+      }
+      _onStateChanged.call();
+      ServiceManager.startBreakForegroundTask(_breakTimeRemaining);
+    });
   }
+}
+
+abstract class ChronoCycle {
+  int _focusTime;
+  int _breakTimeRemaining;
+  Timer? _timer;
+  final Function _onStateChanged;
+  final Future<void> Function() _clearPrefsCallback;
+  TimerState _timerState;
+
+  ChronoCycle(
+    this._focusTime,
+    this._breakTimeRemaining,
+    this._timerState, {
+    required Function onStateChanged,
+    required Future<void> Function() clearPrefsCallback,
+  }) : _clearPrefsCallback = clearPrefsCallback,
+       _onStateChanged = onStateChanged;
+
+  void onAppResumed() {
+    if (_timerState.isOnFocus) {
+      startFocusTimer();
+    } else if (_timerState.isOnBreak) {
+      startBreakTimer(_breakTimeRemaining);
+    }
+  }
+
+  void startFocusTimer();
+
+  void startBreakTimer(int value);
 
   void resume() {
     if (!_timerState.isPaused) return;
@@ -124,37 +191,23 @@ class TimerProvider with ChangeNotifier {
     _setState(TimerState.paused);
   }
 
-  void startBreakTimer(int x) {
+  void resetTimer() async {
+    await _clearPrefsCallback();
     _timer?.cancel();
-
-    if (_focusTime > 0) {
-      _breakTimeRemaining = (_focusTime / x).round();
-      _focusTime = 0;
-    }
-
-    _setState(TimerState.onBreak);
+    _focusTime = 0;
+    _breakTimeRemaining = 0;
 
     Future(() {
-      NotificationService().scheduleBreakNotification(
-        NotificationId.breakOver,
-        _breakTimeRemaining,
-      );
-      ServiceManager.startService();
+      NotificationService().cancelNotification(NotificationId.breakOver);
+      ServiceManager.stopService();
     });
 
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (_breakTimeRemaining-- <= 0) {
-        _finishBreak();
-        return;
-      }
-      notifyListeners();
-      ServiceManager.startBreakForegroundTask(_breakTimeRemaining);
-    });
+    _setState(TimerState.idle);
   }
 
   void _setState(TimerState state, {bool notify = true}) {
     _timerState = state;
-    if (notify) notifyListeners();
+    if (notify) _onStateChanged.call();
   }
 
   get focusTime => _focusTime;
