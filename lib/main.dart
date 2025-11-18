@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orodomop/screens/settings_screen.dart';
 import 'package:orodomop/screens/timer_screen.dart';
 import 'package:orodomop/themes/dark_theme.dart';
 import 'package:orodomop/themes/light_theme.dart';
@@ -72,7 +73,10 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
       builder: (context, isLightTheme, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          routes: {'/': (context) => const TimerScreen()},
+          routes: {
+            '/': (context) => const TimerScreen(),
+            '/settings': (context) => const SettingsScreen(),
+          },
           initialRoute: '/',
           title: 'Orodomop',
           theme: isLightTheme ? lightTheme() : darkTheme(),
