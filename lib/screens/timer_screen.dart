@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/providers/timer_provider.dart';
-import 'package:orodomop/widgets/orodomop_widgets/timer_control_row.dart';
 import 'package:orodomop/widgets/buttons/toggle_theme_button.dart';
+import 'package:orodomop/widgets/orodomop_widgets/timer_control_row.dart';
+import 'package:orodomop/widgets/buttons/text_toggle_theme_button.dart';
 import 'package:orodomop/widgets/cycle_timer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -48,17 +49,20 @@ class _TimerScreenState extends State<TimerScreen> {
               return SingleChildScrollView(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CycleTimer(),
-                        TimerControlRow(),
-                        SizedBox(height: 8),
-                        ToggleThemeButton(),
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onDoubleTap: () {
+                          Navigator.pushNamed(context, '/settings');
+                        },
+                        child: CycleTimer(),
+                      ),
+                      TimerControlRow(),
+                      SizedBox(height: 8),
+                      TextToggleThemeButton(),
+                    ],
                   ),
                 ),
               );
