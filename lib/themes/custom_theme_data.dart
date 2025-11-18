@@ -26,10 +26,17 @@ ThemeData customThemeData(
   FontWeight elevatedButtonTextWeight,
   Color toggleThemeModeColor,
 ) {
+  Color appTitleColor = elevatedButtonTextColor;
   return ThemeData(
     primaryColor: primaryColor,
     scaffoldBackgroundColor: primaryColor,
 
+    appBarTheme: AppBarTheme(
+      elevation: 0,
+      centerTitle: true,
+      titleTextStyle: TextStyle(fontSize: 36, color: appTitleColor),
+      backgroundColor: primaryColor,
+    ),
     inputDecorationTheme: InputDecorationTheme(
       hintStyle: TextStyle(
         color: Colors.grey, // Change this to your desired hint text color
