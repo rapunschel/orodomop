@@ -7,19 +7,14 @@ class ToggleThemeButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ThemeProvider themeModel = context.read<ThemeProvider>();
-
     return Selector<ThemeProvider, bool>(
       selector: (context, model) => model.isLightTheme,
       builder: (context, isLightTheme, child) {
-        return TextButton(
-          onPressed: () {
-            themeModel.toggleTheme();
+        return Switch(
+          onChanged: (_) {
+            context.read<ThemeProvider>().toggleTheme();
           },
-          child: Text(
-            themeModel.isLightTheme ? "Dark mode" : "Light mode",
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          value: !isLightTheme,
         );
       },
     );
