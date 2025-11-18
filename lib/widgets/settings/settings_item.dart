@@ -17,7 +17,7 @@ class SettingsItem extends StatelessWidget {
         children: [
           Expanded(flex: 3, child: Text(text, textAlign: TextAlign.right)),
           SizedBox(width: 10),
-          widget,
+          Expanded(flex: 1, child: widget),
         ],
       ),
     );
