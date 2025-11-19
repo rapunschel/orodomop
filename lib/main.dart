@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orodomop/providers/settings_provider.dart';
 import 'package:orodomop/screens/settings_screen.dart';
 import 'package:orodomop/screens/timer_screen.dart';
 import 'package:orodomop/themes/dark_theme.dart';
@@ -12,22 +13,25 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:orodomop/providers/theme_provider.dart';
+import 'package:orodomop/providers/settings_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
-  final timerModel = await TimerProvider.create();
-  final themeModel = await ThemeProvider.create();
+  final settingsProvider = await SettingsProvider.getInstance();
+  final timerProvider = await TimerProvider.create();
+  final themeProvider = await ThemeProvider.create();
   await NotificationService().initNotification();
-
   FlutterForegroundTask.initCommunicationPort();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => timerModel),
-        ChangeNotifierProvider(create: (context) => themeModel),
+        ChangeNotifierProvider(create: (context) => timerProvider),
+        ChangeNotifierProvider(create: (context) => themeProvider),
+        ChangeNotifierProvider(create: (context) => settingsProvider),
       ],
       child: OrodomopApp(),
     ),
