@@ -9,15 +9,13 @@ import 'dart:async';
 class TimerProvider with ChangeNotifier {
   final SharedPreferences _prefs;
   ChronoCycle? _timeManager;
-  TimerProvider._(this._prefs);
 
-  static Future<TimerProvider> create() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int breakTimeRemaining = prefs.getInt("breakTimeRemaining") ?? 0;
-    int focusTime = prefs.getInt("focusTime") ?? 0;
-    String timestamp = prefs.getString("timestamp") ?? "";
+  TimerProvider(this._prefs) {
+    int breakTimeRemaining = _prefs.getInt("breakTimeRemaining") ?? 0;
+    int focusTime = _prefs.getInt("focusTime") ?? 0;
+    String timestamp = _prefs.getString("timestamp") ?? "";
     TimerState timerState = TimerState.fromString(
-      prefs.getString("timerState"),
+      _prefs.getString("timerState"),
     );
 
     if (!timerState.isIdle) {
@@ -29,19 +27,14 @@ class TimerProvider with ChangeNotifier {
             DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
       }
     }
-
-    TimerProvider model = TimerProvider._(prefs);
-
-    model.timeManager = Orodomop(
+    _timeManager = Orodomop(
       focusTime,
       breakTimeRemaining,
       timerState,
-      onStateChanged: model.notifyListeners,
-      clearPrefsCallback: model.clearPrefs,
+      onStateChanged: notifyListeners,
+      clearPrefsCallback: clearPrefs,
       notificationHandler: NotificationHandler(),
     );
-
-    return model;
   }
 
   Future<void> saveState() async {

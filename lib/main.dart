@@ -13,16 +13,27 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:orodomop/providers/theme_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
-  final settingsProvider = await SettingsProvider.getInstance();
-  final timerProvider = await TimerProvider.create();
-  final themeProvider = await ThemeProvider.create();
-  await NotificationService().initNotification();
+  final futures = <Future>[
+    SharedPreferences.getInstance(),
+    FlutterTimezone.getLocalTimezone(),
+    NotificationService().initNotification(),
+  ];
+
+  final results = await Future.wait(futures);
+  SharedPreferences prefs = results[0] as SharedPreferences;
+  final localTimeZone = results[1] as String;
+  final settingsProvider = SettingsProvider.getInstance(prefs);
+  final timerProvider = TimerProvider(prefs);
+  final themeProvider = ThemeProvider(prefs);
+
+  tz.setLocalLocation(tz.getLocation(localTimeZone));
+
   FlutterForegroundTask.initCommunicationPort();
 
   runApp(

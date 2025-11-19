@@ -3,15 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 class ThemeProvider with ChangeNotifier {
-  bool _isLightTheme;
+  late bool _isLightTheme;
   final SharedPreferences _prefs;
 
-  ThemeProvider._(this._isLightTheme, this._prefs);
-
-  static Future<ThemeProvider> create() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool isLightTheme = prefs.getBool("isLightTheme") ?? false;
-    return ThemeProvider._(isLightTheme, prefs);
+  ThemeProvider(this._prefs) {
+    _isLightTheme = _prefs.getBool("isLightTheme") ?? false;
   }
 
   Future<void> saveState() async {

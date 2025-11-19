@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:async';
 
 class SettingsProvider with ChangeNotifier {
   final SharedPreferences _prefs;
@@ -8,9 +7,8 @@ class SettingsProvider with ChangeNotifier {
   bool _usePomodoro = false;
   SettingsProvider._(this._usePomodoro, this._prefs);
 
-  static Future<SettingsProvider> getInstance() async {
+  static SettingsProvider getInstance(SharedPreferences prefs) {
     if (_instance != null) return _instance!;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     bool usePomodoro = prefs.getBool("usePomodoro") ?? false;
 
     _instance = SettingsProvider._(usePomodoro, prefs);
