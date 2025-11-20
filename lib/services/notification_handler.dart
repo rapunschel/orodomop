@@ -4,9 +4,20 @@ import 'package:orodomop/services/service_manager.dart';
 
 class NotificationHandler {
   Future<void> scheduleBreakOverNotification(int time) async {
-    NotificationService().scheduleBreakNotification(
-      NotificationId.breakOver,
-      time,
+    NotificationService().schedulePushNotification(
+      id: NotificationId.breakOver,
+      seconds: time,
+      title: "Break is over!",
+      body: "Time to focus",
+    );
+  }
+
+  Future<void> scheduleFocusEndedNotification(int time) async {
+    NotificationService().schedulePushNotification(
+      id: NotificationId.breakOver,
+      seconds: time,
+      title: "Break time!",
+      body: "Time for a break",
     );
   }
 
