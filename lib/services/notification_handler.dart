@@ -40,4 +40,8 @@ class NotificationHandler {
   Future<void> cancelBreakPushNotification() async {
     NotificationService().cancelNotification(NotificationId.breakOver);
   }
+
+  Future<void> cancelFocusEndedPushNotification() async {
+    NotificationService().cancelNotification(NotificationId.focusEnd);
+  }
 }

@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:async';
 
 enum NotificationId {
-  focusEnd(0),
+  focusEnd(1),
   breakOver(1);
 
   final int value;
@@ -37,8 +37,8 @@ class NotificationService {
 
       notificationPlugin.zonedSchedule(
         id.value, // Notification ID
-        "Break is over!",
-        "Time to focus",
+        title,
+        body,
         scheduledTime,
         NotificationDetails(
           android: AndroidNotificationDetails(

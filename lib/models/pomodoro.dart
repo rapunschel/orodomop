@@ -17,16 +17,19 @@ class Pomodoro extends ChronoCycle {
   });
 
   @override
-  void startFocusTimer() {
+  void startFocusTimer() async {
     timer?.cancel();
     setState(TimerState.onFocus);
-    currFocusTime = 3;
+
+    notificationHandler.startForegroundService();
+    notificationHandler.scheduleFocusEndedNotification(currFocusTime);
+
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (currFocusTime-- <= 0) {
-        startBreakTimer(_breakDuration);
         notificationHandler.stopForegroundTask();
         return;
       }
+      notificationHandler.startFocusForegroundTask(currFocusTime);
       onStateChanged();
     });
   }
@@ -36,12 +39,16 @@ class Pomodoro extends ChronoCycle {
     timer?.cancel();
     currFocusTime = _breakDuration;
     breakTime = 0;
+    notificationHandler.stopForegroundTask();
+    notificationHandler.cancelBreakPushNotification();
+    notificationHandler.cancelFocusEndedPushNotification();
+
     setState(TimerState.idle);
     await clearPrefsCallback();
   }
 
   @override
-  void startBreakTimer(int value) {
+  void startBreakTimer(int value) async {
     timer?.cancel();
 
     if (currFocusTime <= 0 && timerState.isOnFocus) {
@@ -49,6 +56,8 @@ class Pomodoro extends ChronoCycle {
       currFocusTime = 0;
     }
     setState(TimerState.onBreak);
+    notificationHandler.scheduleBreakOverNotification(breakTime);
+    notificationHandler.startForegroundService();
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (breakTime-- <= 0) {
@@ -59,6 +68,15 @@ class Pomodoro extends ChronoCycle {
         return;
       }
       onStateChanged.call();
+      notificationHandler.startBreakForegroundTask(breakTime);
     });
+  }
+
+  set focusDuration(int value) {
+    _focusDuration = value;
+  }
+
+  set breakDuration(int value) {
+    _breakDuration = value;
   }
 }
