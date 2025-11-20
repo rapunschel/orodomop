@@ -26,7 +26,10 @@ class SettingsScreen extends StatelessWidget {
           ),
           body: SingleChildScrollView(
             child: Column(
-              children: [GeneralSettingsSection(), UISettingsSection()],
+              children: [
+                GeneralSettingsSection(model: model),
+                UISettingsSection(model: model),
+              ],
             ),
           ),
         );
@@ -36,12 +39,11 @@ class SettingsScreen extends StatelessWidget {
 }
 
 class UISettingsSection extends StatelessWidget {
-  const UISettingsSection({super.key});
+  const UISettingsSection({super.key, required this.model});
+  final SettingsProvider model;
 
   @override
   Widget build(BuildContext context) {
-    SettingsProvider model = context.read<SettingsProvider>();
-
     return Selector<SettingsProvider, ({bool usePomodoro})>(
       selector: (context, model) => (usePomodoro: model.usePomodoro),
       builder: (context, value, child) {
@@ -57,7 +59,8 @@ class UISettingsSection extends StatelessWidget {
 }
 
 class GeneralSettingsSection extends StatelessWidget {
-  const GeneralSettingsSection({super.key});
+  const GeneralSettingsSection({super.key, required this.model});
+  final SettingsProvider model;
 
   @override
   Widget build(BuildContext context) {
