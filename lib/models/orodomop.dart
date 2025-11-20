@@ -28,6 +28,17 @@ class Orodomop extends ChronoCycle {
   }
 
   @override
+  Future<void> resetTimer() async {
+    timer?.cancel();
+    currFocusTime = 0;
+    breakTime = 0;
+    notificationHandler.stopForegroundTask();
+    notificationHandler.cancelBreakPushNotification();
+    setState(TimerState.idle);
+    await clearPrefsCallback();
+  }
+
+  @override
   void startBreakTimer(int value) {
     timer?.cancel();
 

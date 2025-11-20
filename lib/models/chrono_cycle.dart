@@ -56,15 +56,7 @@ abstract class ChronoCycle {
     setState(TimerState.paused);
   }
 
-  void resetTimer() async {
-    timer?.cancel();
-    currFocusTime = 0;
-    breakTime = 0;
-    notificationHandler.stopForegroundTask();
-    notificationHandler.cancelBreakPushNotification();
-    setState(TimerState.idle);
-    await clearPrefsCallback();
-  }
+  Future<void> resetTimer();
 
   @protected
   void setState(TimerState state, {bool notify = true}) {
