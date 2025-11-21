@@ -12,7 +12,7 @@ ThemeData darkTheme() {
   Color dialogBorderColor = Colors.redAccent;
   Color dialogShadowColor = dialogBorderColor;
   Color dialogInputColor = Colors.white;
-  double dialogTitleFontSize = 24;
+  double dialogTitleFontSize = 19;
   double dialogBorderWidth = 2;
   double dialogBorderRadius = 33;
   double dialogElevation = 20;

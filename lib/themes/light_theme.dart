@@ -12,7 +12,7 @@ ThemeData lightTheme() {
   Color dialogBackground = Colors.white;
   Color dialogBorderColor = Colors.redAccent;
   Color dialogShadowColor = dialogBorderColor;
-  double dialogTitleFontSize = 24;
+  double dialogTitleFontSize = 19;
   double dialogBorderWidth = 2;
   double dialogBorderRadius = 33;
   double dialogElevation = 20;
