@@ -47,7 +47,7 @@ class BreakDialog extends StatelessWidget {
     }
 
     return AlertDialog(
-      title: Text("Set Break Duration (1/X)"),
+      title: Text(textAlign: TextAlign.center, "Set Break Duration (1/X)"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [

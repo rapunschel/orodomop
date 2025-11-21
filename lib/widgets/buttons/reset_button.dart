@@ -13,7 +13,7 @@ class ResetButton extends StatelessWidget {
           context: context,
           builder: (context) {
             return AlertDialog(
-              title: Text("Reset timer?"),
+              title: Text(textAlign: TextAlign.center, "Reset timer?"),
               actions: [noButton(context), yesButton(context)],
             );
           },
