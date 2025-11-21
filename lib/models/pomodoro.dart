@@ -25,8 +25,10 @@ class Pomodoro extends ChronoCycle {
     notificationHandler.scheduleFocusEndedNotification(currFocusTime);
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (currFocusTime-- <= 0) {
+      if (--currFocusTime <= 0) {
         notificationHandler.stopForegroundTask();
+        setState(TimerState.onBreak);
+        timer.cancel();
         return;
       }
       notificationHandler.startFocusForegroundTask(currFocusTime);
