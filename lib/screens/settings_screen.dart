@@ -64,8 +64,6 @@ class GeneralSettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SettingsProvider model = context.read<SettingsProvider>();
-
     return Selector<SettingsProvider, ({bool usePomodoro})>(
       selector: (context, model) => (usePomodoro: model.usePomodoro),
       builder: (context, value, child) {
@@ -76,8 +74,36 @@ class GeneralSettingsSection extends StatelessWidget {
               text: "Use Pomodoro",
               widget: Switch(
                 value: value.usePomodoro,
-                onChanged: (value) {
-                  model.usePomodoro = value;
+                onChanged: (_) {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text(
+                          textAlign: TextAlign.center,
+                          value.usePomodoro
+                              ? "Switch to Orodomop"
+                              : "Switch to Pomodoro",
+                        ),
+                        content: Text(
+                          "Timer in progress will be reset. Proceed?",
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, 'Cancel'),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.pop(context, 'OK');
+                              model.usePomodoro = !value.usePomodoro;
+                            },
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
               ),
             ),
