@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/providers/settings_provider.dart';
-import 'package:orodomop/screens/settings_screen.dart';
-import 'package:orodomop/screens/timer_screen.dart';
+import 'package:orodomop/screens/settings_screen/settings_screen.dart';
+import 'package:orodomop/screens/timer_screen/timer_screen.dart';
 import 'package:orodomop/themes/dark_theme.dart';
 import 'package:orodomop/themes/light_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:orodomop/services/notification_service.dart';
-import 'package:orodomop/services/service_manager.dart';
+import 'package:orodomop/services/notification/notification_service.dart';
+import 'package:orodomop/services/foreground/service_manager.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';

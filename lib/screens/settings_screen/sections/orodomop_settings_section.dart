@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/providers/settings_provider.dart';
-import 'package:orodomop/widgets/settings/settings_item.dart';
-import 'package:orodomop/widgets/settings/settings_section_title.dart';
+import 'package:orodomop/screens/settings_screen/widgets/settings_item.dart';
+import 'package:orodomop/screens/settings_screen/widgets/settings_section_title.dart';
 import 'package:provider/provider.dart';
 
 class OrodomopSettingsSection extends StatelessWidget {

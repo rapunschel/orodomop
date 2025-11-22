@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/string_formatter.dart';
+import 'package:orodomop/utils/string_formatter.dart';
 
 // The callback function should always be a top-level or static function.
 @pragma('vm:entry-point')

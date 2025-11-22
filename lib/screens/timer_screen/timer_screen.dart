@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/services/service_manager.dart';
+import 'package:orodomop/services/foreground/service_manager.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/providers/settings_provider.dart';
 
-import 'package:orodomop/widgets/orodomop/timer_control_row.dart' as orodomop;
-import 'package:orodomop/widgets/pomodoro/timer_control_row.dart' as pomodoro;
+import 'package:orodomop/screens/timer_screen/orodomop/timer_control_row.dart'
+    as orodomop;
+import 'package:orodomop/screens/timer_screen/pomodoro/timer_control_row.dart'
+    as pomodoro;
 
-import 'package:orodomop/widgets/cycle_timer.dart';
+import 'package:orodomop/screens/timer_screen/widgets/cycle_timer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 

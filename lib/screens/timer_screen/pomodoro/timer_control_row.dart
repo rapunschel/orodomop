@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/models/timer_state.dart';
-import 'package:orodomop/widgets/orodomop/break_button.dart';
-import 'package:orodomop/widgets/buttons/end_break_button.dart';
-import 'package:orodomop/widgets/buttons/pause_or_resume_button.dart';
-import 'package:orodomop/widgets/buttons/reset_button.dart';
-import 'package:orodomop/widgets/buttons/start_button.dart';
+import 'package:orodomop/screens/timer_screen/widgets/buttons/reset_button.dart';
+import 'package:orodomop/screens/timer_screen/pomodoro/break_button.dart';
+import 'package:orodomop/screens/timer_screen/widgets/buttons/end_break_button.dart';
+import 'package:orodomop/screens/timer_screen/widgets/buttons/pause_or_resume_button.dart';
+import 'package:orodomop/screens/timer_screen/widgets/buttons/start_button.dart';
 import 'package:provider/provider.dart';
 
 class TimerControlRow extends StatelessWidget {
@@ -24,8 +24,15 @@ class TimerControlRow extends StatelessWidget {
             timerState: timerModel.timerState,
           ),
       builder: (context, values, child) {
-        if (values.timerState.isIdle ||
-            values.timerState.isOnBreak && values.breakTime == 0) {
+        bool onBreak =
+            (values.breakTime > 0 && values.timerState.isPaused) ||
+            values.timerState.isOnBreak;
+
+        bool onFocus =
+            (values.focusTime > 0 && values.timerState.isPaused) ||
+            values.timerState.isOnFocus;
+
+        if (values.timerState.isIdle && values.focusTime > 0) {
           return StartButton();
         }
 
@@ -34,17 +41,11 @@ class TimerControlRow extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                PauseOrResumeButton(),
+                onBreak || onFocus ? PauseOrResumeButton() : BreakButton(),
                 SizedBox(width: 16),
-                (values.breakTime > 0 && values.timerState.isPaused) ||
-                        values.timerState.isOnBreak
-                    ? EndBreakButton()
-                    : BreakButton(),
+                onFocus ? ResetButton() : EndBreakButton(),
               ],
             ),
-            values.timerState.isOnFocus || values.focusTime > 0
-                ? ResetButton()
-                : SizedBox.shrink(),
           ],
         );
       },

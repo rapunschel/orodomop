@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:orodomop/models/timer_state.dart';
-import 'package:orodomop/services/notification_handler.dart';
+import 'package:orodomop/services/notification/notification_handler.dart';
 
 abstract class ChronoCycle {
   @protected

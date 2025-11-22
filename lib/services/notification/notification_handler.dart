@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:orodomop/services/notification_service.dart';
-import 'package:orodomop/services/service_manager.dart';
+import 'package:orodomop/services/notification/notification_service.dart';
+import 'package:orodomop/services/foreground/service_manager.dart';
 
 class NotificationHandler {
   Future<void> scheduleBreakOverNotification(int time) async {
