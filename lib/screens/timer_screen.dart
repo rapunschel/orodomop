@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/providers/timer_provider.dart';
+import 'package:orodomop/providers/settings_provider.dart';
+
 import 'package:orodomop/widgets/orodomop_widgets/timer_control_row.dart';
 import 'package:orodomop/widgets/cycle_timer.dart';
 import 'package:provider/provider.dart';
@@ -41,16 +43,7 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget build(BuildContext context) {
     return WithForegroundTask(
       child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {
-                Navigator.pushNamed(context, '/settings');
-              },
-            ),
-          ],
-        ),
+        appBar: TimerScreenAppBar(),
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -77,6 +70,32 @@ class _TimerScreenState extends State<TimerScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class TimerScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
+  const TimerScreenAppBar({super.key});
+  @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
+  @override
+  Widget build(BuildContext context) {
+    return Selector<SettingsProvider, bool>(
+      selector: (_, settings) => settings.hideSettingsButton,
+      builder: (context, hideSettingsButton, child) {
+        return AppBar(
+          actions: [
+            hideSettingsButton
+                ? SizedBox.shrink()
+                : IconButton(
+                  icon: Icon(Icons.settings),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/settings');
+                  },
+                ),
+          ],
+        );
+      },
     );
   }
 }

@@ -3,6 +3,7 @@ import 'package:orodomop/widgets/buttons/toggle_theme_button.dart';
 import 'package:orodomop/widgets/settings/settings_item.dart';
 import 'package:orodomop/widgets/settings/settings_section_title.dart';
 import 'package:orodomop/widgets/settings/timer_mode_toggle.dart';
+import 'package:orodomop/widgets/settings/toggle_hide_settings_button.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/providers/settings_provider.dart';
 
@@ -45,13 +46,24 @@ class UISettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Selector<SettingsProvider, ({bool usePomodoro})>(
-      selector: (context, model) => (usePomodoro: model.usePomodoro),
+    return Selector<
+      SettingsProvider,
+      ({bool usePomodoro, bool hideSettingsButton})
+    >(
+      selector:
+          (context, model) => (
+            usePomodoro: model.usePomodoro,
+            hideSettingsButton: model.hideSettingsButton,
+          ),
       builder: (context, value, child) {
         return Column(
           children: [
             SettingsSectionTitle(title: "User Interface"),
             SettingsItem(text: "Dark mode", widget: ToggleThemeButton()),
+            SettingsItem(
+              text: "Hide settings icon",
+              widget: ToggleHideSettingsButton(),
+            ),
           ],
         );
       },

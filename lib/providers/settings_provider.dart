@@ -6,6 +6,7 @@ class SettingsProvider with ChangeNotifier {
   Function? onUsePomodoroCallback;
   static SettingsProvider? _instance;
   bool _usePomodoro = false;
+  bool _hideSettingsButton;
   int _focusDuration;
   int _breakDuration;
 
@@ -14,6 +15,7 @@ class SettingsProvider with ChangeNotifier {
     this._prefs,
     this._focusDuration,
     this._breakDuration,
+    this._hideSettingsButton,
   );
 
   static SettingsProvider getInstance(SharedPreferences prefs) {
@@ -22,12 +24,14 @@ class SettingsProvider with ChangeNotifier {
     // TODO update with proper values after testing
     int focusDuration = prefs.getInt("focusDuration") ?? 6;
     int breakDuration = prefs.getInt("breakDuration") ?? 3;
+    bool hideSettingsButton = prefs.getBool("hideSettingsButton") ?? false;
 
     _instance = SettingsProvider._(
       usePomodoro,
       prefs,
       focusDuration,
       breakDuration,
+      hideSettingsButton,
     );
     return _instance!;
   }
@@ -53,7 +57,14 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set hideSettingsButton(bool value) {
+    _hideSettingsButton = value;
+    _prefs.setBool("hideSettingsButton", _hideSettingsButton);
+    notifyListeners();
+  }
+
   bool get usePomodoro => _usePomodoro;
+  bool get hideSettingsButton => _hideSettingsButton;
   int get focusDuration => _focusDuration;
   int get breakDuration => _breakDuration;
 }

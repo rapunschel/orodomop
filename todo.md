@@ -11,7 +11,7 @@
   - [ ] add start focus
 - [ ] Settings Page
   - [x] Double Tap brings up settings
-  - [ ] Toggle visible settings icon
+  - [x] Toggle visible settings icon
   - [x] Toggle dark mode / light mode.
   - [ ] Orodomop options
     - [ ] Optional notification for taking a break
