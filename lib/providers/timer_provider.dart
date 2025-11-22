@@ -135,4 +135,5 @@ class TimerProvider with ChangeNotifier {
   get timerState => _timeManager!.timerState;
   get usePomodoro => _settings.usePomodoro;
   get rememberX => _settings.rememberX;
+  get X => _X;
 }
