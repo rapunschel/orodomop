@@ -14,7 +14,7 @@
     - [ ] Optional notification for taking a break
       - [ ] Assign how long until notification triggers
     - [x] Remember X to avoid prompt
-      - [ ] Add opt-out feature for it
+      - [x] Add opt-out feature for it
   - [x] Pomodoro options
     - [x] update break duration
     - [x] update focus duration
