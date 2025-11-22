@@ -4,14 +4,20 @@
   - [x] Separate logic from timerprovider into ChronoCycle + subclass
   - [x] Extract notifiction functionality into NotificationHandler
   - [x] Improve project Structure
+- [x] Implement Pomodoro functionality
+- [ ] Add new buttons for Pomodoro & update UI
+  - [ ] add stop
+  - [ ] add start break
+  - [ ] add start focus
 - [ ] Settings Page
   - [x] Double Tap brings up settings
   - [ ] Toggle visible settings icon
   - [x] Toggle dark mode / light mode.
   - [ ] Orodomop options
-    - [ ] Set default X to avoid prompt
+    - [ ] Optional notification for taking a break
+      - [ ] Assign how long until notification triggers
+    - [ ] Remember X to avoid prompt
+      - [ ] Add opt-out feature for it
   - [ ] Pomodoro options
     - [ ] update break duration
     - [ ] update focus duration
-- [ ] Pomodoro
-  - [ ] Implement Pomodoro functionality
