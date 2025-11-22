@@ -11,14 +11,14 @@ import 'dart:async';
 class TimerProvider with ChangeNotifier {
   final SharedPreferences _prefs;
   late final SettingsProvider _settings;
-  int? _X;
+  int? _x;
   ChronoCycle? _timeManager;
 
   TimerProvider(this._prefs) {
     int breakTimeRemaining = _prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = _prefs.getInt("focusTime") ?? 0;
     String timestamp = _prefs.getString("timestamp") ?? "";
-    _X = _prefs.getInt("X");
+    _x = _prefs.getInt("X");
 
     _settings = SettingsProvider.getInstance(_prefs);
     _settings.onUsePomodoroCallback = _onTimerSwap;
@@ -94,8 +94,8 @@ class TimerProvider with ChangeNotifier {
     await _prefs.setString("timestamp", DateTime.now().toString());
     await _prefs.setString("timerState", _timeManager!.timerState.name);
 
-    if (_X != null) {
-      await _prefs.setInt("X", _X!);
+    if (_x != null) {
+      await _prefs.setInt("X", _x!);
     }
   }
 
@@ -119,7 +119,7 @@ class TimerProvider with ChangeNotifier {
       _timeManager!.startBreakTimer();
       return;
     }
-    _X = value;
+    _x = value;
     _timeManager!.startBreakTimer(value: value);
   }
 
@@ -142,5 +142,5 @@ class TimerProvider with ChangeNotifier {
   get timerState => _timeManager!.timerState;
   get usePomodoro => _settings.usePomodoro;
   get rememberX => _settings.rememberX;
-  get X => _X;
+  get X => _x;
 }

@@ -59,7 +59,6 @@ class TimerHandler extends TaskHandler {
     List? list = (data is List) ? data : null;
     if (list == null) return;
 
-    // TODO do it better.
     if (list[0] == focus) {
       _showFocusNotification((list[1] is int) ? list[1] : 0);
     } else if (list[0] == relax) {
