@@ -4,6 +4,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SettingsProvider with ChangeNotifier {
   final SharedPreferences _prefs;
   Function? onUsePomodoroCallback;
+  Function(int focusDuration, int breakDuration)? onPomodoroDurationChange;
+
   static SettingsProvider? _instance;
   bool _usePomodoro = false;
   bool _hideSettingsButton;
@@ -48,12 +50,14 @@ class SettingsProvider with ChangeNotifier {
   set focusDuration(int value) {
     _focusDuration = value;
     _prefs.setInt("focusDuration", _focusDuration);
+    onPomodoroDurationChange!.call(_focusDuration, _breakDuration);
     notifyListeners();
   }
 
   set breakDuration(int value) {
     _breakDuration = value;
     _prefs.setInt("breakDuration", _breakDuration);
+    onPomodoroDurationChange!.call(_focusDuration, _breakDuration);
     notifyListeners();
   }
 
