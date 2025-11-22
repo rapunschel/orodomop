@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orodomop/widgets/buttons/toggle_theme_button.dart';
 import 'package:orodomop/widgets/settings/settings_item.dart';
 import 'package:orodomop/widgets/settings/settings_section_title.dart';
+import 'package:orodomop/widgets/settings/timer_mode_toggle.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/providers/settings_provider.dart';
 
@@ -72,40 +73,7 @@ class GeneralSettingsSection extends StatelessWidget {
             SettingsSectionTitle(title: "General"),
             SettingsItem(
               text: "Use Pomodoro",
-              widget: Switch(
-                value: value.usePomodoro,
-                onChanged: (_) {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return AlertDialog(
-                        title: Text(
-                          textAlign: TextAlign.center,
-                          value.usePomodoro
-                              ? "Switch to Orodomop"
-                              : "Switch to Pomodoro",
-                        ),
-                        content: Text(
-                          "Timer in progress will be reset. Proceed?",
-                        ),
-                        actions: [
-                          TextButton(
-                            onPressed: () => Navigator.pop(context, 'Cancel'),
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context, 'OK');
-                              model.usePomodoro = !value.usePomodoro;
-                            },
-                            child: const Text('OK'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-              ),
+              widget: TimerModeToggle(model: model),
             ),
           ],
         );
