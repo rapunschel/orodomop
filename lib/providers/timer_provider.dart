@@ -18,7 +18,7 @@ class TimerProvider with ChangeNotifier {
     int breakTimeRemaining = _prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = _prefs.getInt("focusTime") ?? 0;
     String timestamp = _prefs.getString("timestamp") ?? "";
-    _X = _prefs.getInt("x");
+    _X = _prefs.getInt("X");
 
     _settings = SettingsProvider.getInstance(_prefs);
     _settings.onUsePomodoroCallback = _onTimerSwap;
@@ -93,6 +93,10 @@ class TimerProvider with ChangeNotifier {
     await _prefs.setInt("focusTime", _timeManager!.focusTime);
     await _prefs.setString("timestamp", DateTime.now().toString());
     await _prefs.setString("timerState", _timeManager!.timerState.name);
+
+    if (_X != null) {
+      await _prefs.setInt("X", _X!);
+    }
   }
 
   Future<void> clearPrefs() async {
@@ -111,9 +115,12 @@ class TimerProvider with ChangeNotifier {
   }
 
   void startBreakTimer({int? value}) {
-    value == null
-        ? _timeManager!.startBreakTimer()
-        : _timeManager!.startBreakTimer(value: value);
+    if (value == null) {
+      _timeManager!.startBreakTimer();
+      return;
+    }
+    _X = value;
+    _timeManager!.startBreakTimer(value: value);
   }
 
   void resetTimer() {

@@ -34,6 +34,13 @@ class BreakDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
+    TimerProvider model = context.read<TimerProvider>();
+    bool rememberX = model.rememberX;
+    int? x = model.X;
+    if (rememberX) {
+      controller.text = x == null ? "" : x.toString();
+    }
+
     void onSubmitted(dynamic value) {
       if (value.isNotEmpty) {
         int x = int.tryParse(value) ?? 0;
@@ -52,7 +59,7 @@ class BreakDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
-            autofocus: true,
+            autofocus: rememberX && x != null ? false : true,
             onSubmitted: (_) {
               onSubmitted(controller.text);
             },
