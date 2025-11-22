@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:orodomop/models/chrono_cycle.dart';
 import 'package:orodomop/models/timer_state.dart';
-import 'package:flutter/foundation.dart';
 
 class Orodomop extends ChronoCycle {
   bool breakReminderEnabled;
