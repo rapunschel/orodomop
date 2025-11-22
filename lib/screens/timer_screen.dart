@@ -59,8 +59,6 @@ class _TimerScreenState extends State<TimerScreen> {
                         child: CycleTimer(),
                       ),
                       TimerControlRow(),
-                      SizedBox(height: 8),
-                      TextToggleThemeButton(),
                     ],
                   ),
                 ),
