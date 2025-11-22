@@ -42,9 +42,9 @@ class TimerProvider with ChangeNotifier {
   }
 
   void _onPomodoroSettingChange() async {
+    await _timeManager!.resetTimer();
     _timeManager = _createTimer();
     notifyListeners();
-    await clearPrefs();
   }
 
   ChronoCycle _createTimer({
