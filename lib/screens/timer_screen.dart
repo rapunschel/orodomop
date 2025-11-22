@@ -3,7 +3,10 @@ import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/providers/settings_provider.dart';
 
-import 'package:orodomop/widgets/orodomop_widgets/timer_control_row.dart';
+import 'package:orodomop/widgets/orodomop_widgets/timer_control_row.dart'
+    as orodomop;
+import 'package:orodomop/widgets/pomodoro/timer_control_row.dart' as pomodoro;
+
 import 'package:orodomop/widgets/cycle_timer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -47,24 +50,35 @@ class _TimerScreenState extends State<TimerScreen> {
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              return SingleChildScrollView(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onDoubleTap: () {
-                          Navigator.pushNamed(context, '/settings');
-                        },
-                        child: CycleTimer(),
+              return Selector<SettingsProvider, ({bool usePomodoro})>(
+                selector: (context, model) => (usePomodoro: model.usePomodoro),
+                builder: (context, value, child) {
+                  return SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight,
                       ),
-                      TimerControlRow(),
-                      SizedBox(height: Scaffold.of(context).appBarMaxHeight),
-                    ],
-                  ),
-                ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          GestureDetector(
+                            onDoubleTap: () {
+                              Navigator.pushNamed(context, '/settings');
+                            },
+                            child: CycleTimer(),
+                          ),
+                          value.usePomodoro
+                              ? pomodoro.TimerControlRow()
+                              : orodomop.TimerControlRow(),
+                          SizedBox(
+                            height: Scaffold.of(context).appBarMaxHeight,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               );
             },
           ),
