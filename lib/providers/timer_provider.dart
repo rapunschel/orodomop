@@ -82,6 +82,8 @@ class TimerProvider with ChangeNotifier {
           focusTime,
           breakTimeRemaining,
           timerState,
+          true,
+          15,
           onStateChanged: notifyListeners,
           clearPrefsCallback: clearPrefs,
           notificationHandler: NotificationHandler(),

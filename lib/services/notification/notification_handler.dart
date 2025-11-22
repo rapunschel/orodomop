@@ -14,10 +14,19 @@ class NotificationHandler {
 
   Future<void> scheduleFocusEndedNotification(int time) async {
     NotificationService().schedulePushNotification(
-      id: NotificationId.focusEnd,
+      id: NotificationId.breakReminder,
       seconds: time,
       title: "Break time!",
-      body: "Time for a break",
+      body: "Time for a break...?",
+    );
+  }
+
+  Future<void> scheduleBreakReminderNotification(int time) async {
+    NotificationService().schedulePushNotification(
+      id: NotificationId.focusEnd,
+      seconds: time,
+      title: "Break reminder",
+      body: "T",
     );
   }
 
@@ -39,6 +48,10 @@ class NotificationHandler {
 
   Future<void> cancelBreakPushNotification() async {
     NotificationService().cancelNotification(NotificationId.breakOver);
+  }
+
+  Future<void> cancelBreakReminderNotification() async {
+    NotificationService().cancelNotification(NotificationId.breakReminder);
   }
 
   Future<void> cancelFocusEndedPushNotification() async {

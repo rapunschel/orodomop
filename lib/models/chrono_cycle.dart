@@ -54,6 +54,7 @@ abstract class ChronoCycle {
     notificationHandler.stopForegroundTask();
     notificationHandler.cancelBreakPushNotification();
     notificationHandler.cancelFocusEndedPushNotification();
+    notificationHandler.cancelBreakReminderNotification();
     setState(TimerState.paused);
   }
 
