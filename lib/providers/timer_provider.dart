@@ -131,4 +131,5 @@ class TimerProvider with ChangeNotifier {
   get breakTimeRemaining => _timeManager!.breakTimeRemaining;
   get timerState => _timeManager!.timerState;
   get usePomodoro => _settings.usePomodoro;
+  get rememberX => _settings.rememberX;
 }
