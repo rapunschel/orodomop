@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'dart:async';
 
 enum NotificationId {
+  breakReminder(2),
   focusEnd(1),
   breakOver(1);
 
