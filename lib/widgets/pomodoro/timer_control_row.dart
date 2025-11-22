@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/models/timer_state.dart';
+import 'package:orodomop/widgets/buttons/reset_button.dart';
 import 'package:orodomop/widgets/pomodoro/break_button.dart';
 import 'package:orodomop/widgets/buttons/end_break_button.dart';
 import 'package:orodomop/widgets/buttons/pause_or_resume_button.dart';
@@ -27,7 +28,7 @@ class TimerControlRow extends StatelessWidget {
             (values.breakTime > 0 && values.timerState.isPaused) ||
             values.timerState.isOnBreak;
 
-        bool onFous =
+        bool onFocus =
             (values.focusTime > 0 && values.timerState.isPaused) ||
             values.timerState.isOnFocus;
 
@@ -35,16 +36,14 @@ class TimerControlRow extends StatelessWidget {
           return StartButton();
         }
 
-        //values.timerState.isOnBreak && values.breakTime == 0
-
         return Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                onBreak || onFous ? PauseOrResumeButton() : BreakButton(),
+                onBreak || onFocus ? PauseOrResumeButton() : BreakButton(),
                 SizedBox(width: 16),
-                EndBreakButton(),
+                onFocus ? ResetButton() : EndBreakButton(),
               ],
             ),
           ],
