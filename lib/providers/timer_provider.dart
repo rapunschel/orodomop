@@ -95,8 +95,10 @@ class TimerProvider with ChangeNotifier {
     _timeManager!.startFocusTimer();
   }
 
-  void startBreakTimer(int value) {
-    _timeManager!.startBreakTimer(value);
+  void startBreakTimer({int? value}) {
+    value == null
+        ? _timeManager!.startBreakTimer()
+        : _timeManager!.startBreakTimer(value: value);
   }
 
   void resetTimer() {

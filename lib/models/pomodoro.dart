@@ -50,7 +50,7 @@ class Pomodoro extends ChronoCycle {
   }
 
   @override
-  void startBreakTimer(int value) async {
+  void startBreakTimer({int? value}) async {
     timer?.cancel();
 
     if (currFocusTime <= 0 && timerState.isOnFocus) {

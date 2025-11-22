@@ -39,11 +39,11 @@ class Orodomop extends ChronoCycle {
   }
 
   @override
-  void startBreakTimer(int value) {
+  void startBreakTimer({int? value}) {
     timer?.cancel();
 
     if (currFocusTime > 0) {
-      breakTime = (currFocusTime / value).round();
+      breakTime = (currFocusTime / value!).round();
       currFocusTime = 0;
     }
 

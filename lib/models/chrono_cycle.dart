@@ -31,19 +31,19 @@ abstract class ChronoCycle {
     if (_timerState.isOnFocus) {
       startFocusTimer();
     } else if (_timerState.isOnBreak) {
-      startBreakTimer(breakTime);
+      startBreakTimer(value: breakTime);
     }
   }
 
   void startFocusTimer();
 
-  void startBreakTimer(int value);
+  void startBreakTimer({int? value});
 
   void resume() {
     if (!_timerState.isPaused) return;
 
     if (breakTime > 0 && currFocusTime == 0) {
-      return startBreakTimer(breakTime);
+      return startBreakTimer();
     }
 
     startFocusTimer();
