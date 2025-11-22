@@ -11,12 +11,15 @@ import 'dart:async';
 class TimerProvider with ChangeNotifier {
   final SharedPreferences _prefs;
   late final SettingsProvider _settings;
+  int? _X;
   ChronoCycle? _timeManager;
 
   TimerProvider(this._prefs) {
     int breakTimeRemaining = _prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = _prefs.getInt("focusTime") ?? 0;
     String timestamp = _prefs.getString("timestamp") ?? "";
+    _X = _prefs.getInt("x");
+
     _settings = SettingsProvider.getInstance(_prefs);
     _settings.onUsePomodoroCallback = _onTimerSwap;
     _settings.onPomodoroDurationChange = _onPomodoroDurationChange;
