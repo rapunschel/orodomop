@@ -39,7 +39,7 @@ class Pomodoro extends ChronoCycle {
   @override
   Future<void> resetTimer() async {
     timer?.cancel();
-    currFocusTime = _breakDuration;
+    currFocusTime = _focusDuration;
     breakTime = 0;
     notificationHandler.stopForegroundTask();
     notificationHandler.cancelBreakPushNotification();
