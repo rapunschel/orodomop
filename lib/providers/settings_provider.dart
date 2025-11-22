@@ -7,10 +7,12 @@ class SettingsProvider with ChangeNotifier {
   Function(int focusDuration, int breakDuration)? onPomodoroDurationChange;
 
   static SettingsProvider? _instance;
-  bool _usePomodoro = false;
+  bool _usePomodoro;
   bool _hideSettingsButton;
+  bool _rememberX;
   int _focusDuration;
   int _breakDuration;
+  int? _x;
 
   SettingsProvider._(
     this._usePomodoro,
@@ -18,6 +20,8 @@ class SettingsProvider with ChangeNotifier {
     this._focusDuration,
     this._breakDuration,
     this._hideSettingsButton,
+    this._rememberX,
+    this._x,
   );
 
   static SettingsProvider getInstance(SharedPreferences prefs) {
@@ -26,6 +30,8 @@ class SettingsProvider with ChangeNotifier {
     // TODO update with proper values after testing
     int focusDuration = prefs.getInt("focusDuration") ?? 6;
     int breakDuration = prefs.getInt("breakDuration") ?? 3;
+    bool rememberX = prefs.getBool("rememberX") ?? true;
+    int? x = prefs.getInt("x");
     bool hideSettingsButton = prefs.getBool("hideSettingsButton") ?? false;
 
     _instance = SettingsProvider._(
@@ -34,6 +40,8 @@ class SettingsProvider with ChangeNotifier {
       focusDuration,
       breakDuration,
       hideSettingsButton,
+      rememberX,
+      x,
     );
     return _instance!;
   }
@@ -67,8 +75,27 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  set rememberX(bool value) {
+    _rememberX = value;
+    _prefs.setBool("rememberX", _rememberX);
+    notifyListeners();
+  }
+
+  set x(int? value) {
+    _x = value;
+
+    if (value == null) {
+      _prefs.remove("x");
+      return;
+    }
+    _prefs.setInt("x", _x!);
+    notifyListeners();
+  }
+
   bool get usePomodoro => _usePomodoro;
   bool get hideSettingsButton => _hideSettingsButton;
+  bool get rememberX => _rememberX;
   int get focusDuration => _focusDuration;
   int get breakDuration => _breakDuration;
+  int? get x => _x;
 }
