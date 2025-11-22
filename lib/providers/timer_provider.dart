@@ -18,8 +18,8 @@ class TimerProvider with ChangeNotifier {
     int focusTime = _prefs.getInt("focusTime") ?? 0;
     String timestamp = _prefs.getString("timestamp") ?? "";
     _settings = SettingsProvider.getInstance(_prefs);
-    _settings.onUsePomodoroCallback = _onPomodoroSettingChange;
-
+    _settings.onUsePomodoroCallback = _onTimerSwap;
+    _settings.onPomodoroDurationChange = _onPomodoroDurationChange;
     TimerState timerState = TimerState.fromString(
       _prefs.getString("timerState"),
     );
@@ -41,7 +41,19 @@ class TimerProvider with ChangeNotifier {
     );
   }
 
-  void _onPomodoroSettingChange() async {
+  void _onPomodoroDurationChange(int focusDuration, int breakDuration) {
+    if (_timeManager is Pomodoro) {
+      (_timeManager as Pomodoro).focusDuration = focusDuration;
+      (_timeManager as Pomodoro).breakDuration = breakDuration;
+
+      if (_timeManager!.timerState.isIdle) {
+        _timeManager!.resetTimer(); // Update focus/ break time.
+      }
+      notifyListeners();
+    }
+  }
+
+  void _onTimerSwap() async {
     await _timeManager!.resetTimer();
     _timeManager = _createTimer();
     notifyListeners();
