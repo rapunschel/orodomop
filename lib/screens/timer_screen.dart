@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/widgets/orodomop_widgets/timer_control_row.dart';
-import 'package:orodomop/widgets/buttons/text_toggle_theme_button.dart';
 import 'package:orodomop/widgets/cycle_timer.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
@@ -42,6 +41,16 @@ class _TimerScreenState extends State<TimerScreen> {
   Widget build(BuildContext context) {
     return WithForegroundTask(
       child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.settings),
+              onPressed: () {
+                Navigator.pushNamed(context, '/settings');
+              },
+            ),
+          ],
+        ),
         body: SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
@@ -59,6 +68,7 @@ class _TimerScreenState extends State<TimerScreen> {
                         child: CycleTimer(),
                       ),
                       TimerControlRow(),
+                      SizedBox(height: Scaffold.of(context).appBarMaxHeight),
                     ],
                   ),
                 ),
