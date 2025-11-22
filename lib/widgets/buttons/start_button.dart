@@ -11,7 +11,7 @@ class StartButton extends StatelessWidget {
       onPressed: () {
         context.read<TimerProvider>().startFocusTimer();
       },
-      child: Text("Start"),
+      child: Text("Focus"),
     );
   }
 }
