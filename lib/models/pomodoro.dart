@@ -21,8 +21,8 @@ class Pomodoro extends ChronoCycle {
     timer?.cancel();
     setState(TimerState.onFocus);
 
-    notificationHandler.startForegroundService();
     notificationHandler.scheduleFocusEndedNotification(currFocusTime);
+    await notificationHandler.startForegroundService();
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (--currFocusTime <= 0) {
@@ -56,7 +56,7 @@ class Pomodoro extends ChronoCycle {
 
     setState(TimerState.onBreak);
     notificationHandler.scheduleBreakOverNotification(breakTime);
-    notificationHandler.startForegroundService();
+    await notificationHandler.startForegroundService();
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (breakTime-- <= 0) {

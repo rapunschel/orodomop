@@ -13,12 +13,12 @@ class Orodomop extends ChronoCycle {
   });
 
   @override
-  void startFocusTimer() {
+  void startFocusTimer() async {
     timer?.cancel();
     setState(TimerState.onFocus);
 
     notificationHandler.cancelBreakPushNotification();
-    notificationHandler.startForegroundService();
+    await notificationHandler.startForegroundService();
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       currFocusTime++;
@@ -39,7 +39,7 @@ class Orodomop extends ChronoCycle {
   }
 
   @override
-  void startBreakTimer({int? value}) {
+  void startBreakTimer({int? value}) async {
     timer?.cancel();
 
     if (currFocusTime > 0) {
@@ -50,7 +50,7 @@ class Orodomop extends ChronoCycle {
     setState(TimerState.onBreak);
 
     notificationHandler.scheduleBreakOverNotification(breakTime);
-    notificationHandler.startForegroundService();
+    await notificationHandler.startForegroundService();
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (breakTime-- <= 0) {
