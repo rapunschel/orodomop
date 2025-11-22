@@ -1,19 +1,25 @@
 import 'package:flutter/widgets.dart';
 import 'package:orodomop/models/chrono_cycle.dart';
 import 'package:orodomop/models/orodomop.dart';
+import 'package:orodomop/models/pomodoro.dart';
 import 'package:orodomop/models/timer_state.dart';
+import 'package:orodomop/providers/settings_provider.dart';
 import 'package:orodomop/services/notification_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 class TimerProvider with ChangeNotifier {
   final SharedPreferences _prefs;
+  late final SettingsProvider _settings;
   ChronoCycle? _timeManager;
 
   TimerProvider(this._prefs) {
     int breakTimeRemaining = _prefs.getInt("breakTimeRemaining") ?? 0;
     int focusTime = _prefs.getInt("focusTime") ?? 0;
     String timestamp = _prefs.getString("timestamp") ?? "";
+    _settings = SettingsProvider.getInstance(_prefs);
+    _settings.onUsePomodoroCallback = _onPomodoroSettingChange;
+
     TimerState timerState = TimerState.fromString(
       _prefs.getString("timerState"),
     );
@@ -27,14 +33,44 @@ class TimerProvider with ChangeNotifier {
             DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
       }
     }
-    _timeManager = Orodomop(
-      focusTime,
-      breakTimeRemaining,
-      timerState,
-      onStateChanged: notifyListeners,
-      clearPrefsCallback: clearPrefs,
-      notificationHandler: NotificationHandler(),
+
+    _timeManager = _createTimer(
+      focusTime: focusTime,
+      breakTimeRemaining: breakTimeRemaining,
+      timerState: timerState,
     );
+  }
+
+  void _onPomodoroSettingChange() async {
+    _timeManager = _createTimer();
+    notifyListeners();
+    await clearPrefs();
+  }
+
+  ChronoCycle _createTimer({
+    int focusTime = 0,
+    int breakTimeRemaining = 0,
+    TimerState timerState = TimerState.idle,
+  }) {
+    return _settings.usePomodoro
+        ? Pomodoro(
+          _settings.focusDuration,
+          _settings.breakDuration,
+          _settings.focusDuration,
+          breakTimeRemaining,
+          timerState,
+          onStateChanged: notifyListeners,
+          clearPrefsCallback: clearPrefs,
+          notificationHandler: NotificationHandler(),
+        )
+        : Orodomop(
+          focusTime,
+          breakTimeRemaining,
+          timerState,
+          onStateChanged: notifyListeners,
+          clearPrefsCallback: clearPrefs,
+          notificationHandler: NotificationHandler(),
+        );
   }
 
   Future<void> saveState() async {
@@ -80,4 +116,5 @@ class TimerProvider with ChangeNotifier {
   get focusTime => _timeManager!.focusTime;
   get breakTimeRemaining => _timeManager!.breakTimeRemaining;
   get timerState => _timeManager!.timerState;
+  get usePomodoro => _settings.usePomodoro;
 }
