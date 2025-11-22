@@ -66,15 +66,15 @@ class BreakDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            onSubmitted(controller.text);
-          },
-          child: Text("OK"),
-        ),
-        TextButton(
-          onPressed: () {
             Navigator.of(context).pop();
           },
           child: Text("Cancel"),
+        ),
+        TextButton(
+          onPressed: () {
+            onSubmitted(controller.text);
+          },
+          child: Text("OK"),
         ),
       ],
     );
