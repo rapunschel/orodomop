@@ -3,8 +3,7 @@ import 'package:orodomop/services/service_manager.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/providers/settings_provider.dart';
 
-import 'package:orodomop/widgets/orodomop_widgets/timer_control_row.dart'
-    as orodomop;
+import 'package:orodomop/widgets/orodomop/timer_control_row.dart' as orodomop;
 import 'package:orodomop/widgets/pomodoro/timer_control_row.dart' as pomodoro;
 
 import 'package:orodomop/widgets/cycle_timer.dart';
