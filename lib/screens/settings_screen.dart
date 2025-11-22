@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:orodomop/widgets/buttons/toggle_theme_button.dart';
+import 'package:orodomop/widgets/settings/pomodoro_settings_section.dart';
 import 'package:orodomop/widgets/settings/settings_item.dart';
 import 'package:orodomop/widgets/settings/settings_section_title.dart';
 import 'package:orodomop/widgets/settings/timer_mode_toggle.dart';
@@ -13,6 +14,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final SettingsProvider model = context.read<SettingsProvider>();
+    final double spacing = 24;
     return Selector<SettingsProvider, ({bool usePomodoro})>(
       selector: (context, model) => (usePomodoro: model.usePomodoro),
       builder: (context, value, child) {
@@ -30,6 +32,9 @@ class SettingsScreen extends StatelessWidget {
             child: Column(
               children: [
                 GeneralSettingsSection(model: model),
+                SizedBox(height: spacing),
+                PomodoroSettingsSection(model: model),
+                SizedBox(height: spacing),
                 UISettingsSection(model: model),
               ],
             ),

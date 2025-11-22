@@ -5,10 +5,7 @@
   - [x] Extract notifiction functionality into NotificationHandler
   - [x] Improve project Structure
 - [x] Implement Pomodoro functionality
-- [ ] Add new buttons for Pomodoro & update UI
-  - [ ] add stop
-  - [ ] add start break
-  - [ ] add start focus
+- [x] Make a control-row for Pomodoro & connect to UI
 - [ ] Settings Page
   - [x] Double Tap brings up settings
   - [x] Toggle visible settings icon
@@ -18,6 +15,6 @@
       - [ ] Assign how long until notification triggers
     - [ ] Remember X to avoid prompt
       - [ ] Add opt-out feature for it
-  - [ ] Pomodoro options
-    - [ ] update break duration
-    - [ ] update focus duration
+  - [x] Pomodoro options
+    - [x] update break duration
+    - [x] update focus duration
