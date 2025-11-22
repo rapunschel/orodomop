@@ -28,7 +28,7 @@ class Pomodoro extends ChronoCycle {
       if (--currFocusTime <= 0) {
         notificationHandler.stopForegroundTask();
         breakTime = _breakDuration;
-        setState(TimerState.onFocus);
+        setState(TimerState.idle);
         timer.cancel();
         return;
       }
@@ -54,10 +54,6 @@ class Pomodoro extends ChronoCycle {
   void startBreakTimer({int? value}) async {
     timer?.cancel();
 
-    if (currFocusTime <= 0 && timerState.isOnFocus) {
-      breakTime = _breakDuration;
-      currFocusTime = 0;
-    }
     setState(TimerState.onBreak);
     notificationHandler.scheduleBreakOverNotification(breakTime);
     notificationHandler.startForegroundService();
