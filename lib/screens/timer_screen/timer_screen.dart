@@ -59,23 +59,25 @@ class _TimerScreenState extends State<TimerScreen> {
                       constraints: BoxConstraints(
                         minHeight: constraints.maxHeight,
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onDoubleTap: () {
-                              Navigator.pushNamed(context, '/settings');
-                            },
-                            child: CycleTimer(),
-                          ),
-                          value.usePomodoro
-                              ? pomodoro.TimerControlRow()
-                              : orodomop.TimerControlRow(),
-                          SizedBox(
-                            height: Scaffold.of(context).appBarMaxHeight,
-                          ),
-                        ],
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onDoubleTap: () {
+                                Navigator.pushNamed(context, '/settings');
+                              },
+                              child: CycleTimer(),
+                            ),
+                            value.usePomodoro
+                                ? pomodoro.TimerControlRow()
+                                : orodomop.TimerControlRow(),
+                            SizedBox(
+                              height: Scaffold.of(context).appBarMaxHeight,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   );
