@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:orodomop/services/foreground_service.dart';
+import 'package:orodomop/services/foreground/foreground_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ServiceManager {
@@ -44,8 +44,7 @@ class ServiceManager {
       androidNotificationOptions: AndroidNotificationOptions(
         channelId: 'foreground_service',
         channelName: 'Foreground Service Notifications',
-        channelDescription:
-            'Counters', 
+        channelDescription: 'Counters',
         onlyAlertOnce: true,
       ),
       iosNotificationOptions: const IOSNotificationOptions(

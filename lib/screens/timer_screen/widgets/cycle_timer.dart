@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:orodomop/models/timer_state.dart';
 import 'package:provider/provider.dart';
-import 'package:orodomop/models/string_formatter.dart';
+import 'package:orodomop/utils/string_formatter.dart';
 import 'package:glowy_borders/glowy_borders.dart';
 
 class CycleTimer extends StatelessWidget {

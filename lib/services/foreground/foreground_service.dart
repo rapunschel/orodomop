@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
 import 'package:flutter/material.dart';
-import 'package:orodomop/models/string_formatter.dart';
+import 'package:orodomop/utils/string_formatter.dart';
 
 // The callback function should always be a top-level or static function.
 @pragma('vm:entry-point')
@@ -59,7 +59,6 @@ class TimerHandler extends TaskHandler {
     List? list = (data is List) ? data : null;
     if (list == null) return;
 
-    // TODO do it better.
     if (list[0] == focus) {
       _showFocusNotification((list[1] is int) ? list[1] : 0);
     } else if (list[0] == relax) {

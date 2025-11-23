@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:orodomop/models/timer_state.dart';
-import 'package:orodomop/services/notification_handler.dart';
+import 'package:orodomop/services/notification/notification_handler.dart';
 
 abstract class ChronoCycle {
   @protected
@@ -31,19 +31,19 @@ abstract class ChronoCycle {
     if (_timerState.isOnFocus) {
       startFocusTimer();
     } else if (_timerState.isOnBreak) {
-      startBreakTimer(breakTime);
+      startBreakTimer(value: breakTime);
     }
   }
 
   void startFocusTimer();
 
-  void startBreakTimer(int value);
+  void startBreakTimer({int? value});
 
   void resume() {
     if (!_timerState.isPaused) return;
 
     if (breakTime > 0 && currFocusTime == 0) {
-      return startBreakTimer(breakTime);
+      return startBreakTimer();
     }
 
     startFocusTimer();
@@ -53,18 +53,12 @@ abstract class ChronoCycle {
     timer?.cancel();
     notificationHandler.stopForegroundTask();
     notificationHandler.cancelBreakPushNotification();
+    notificationHandler.cancelFocusEndedPushNotification();
+    notificationHandler.cancelBreakReminderNotification();
     setState(TimerState.paused);
   }
 
-  void resetTimer() async {
-    timer?.cancel();
-    currFocusTime = 0;
-    breakTime = 0;
-    notificationHandler.stopForegroundTask();
-    notificationHandler.cancelBreakPushNotification();
-    setState(TimerState.idle);
-    await clearPrefsCallback();
-  }
+  Future<void> resetTimer();
 
   @protected
   void setState(TimerState state, {bool notify = true}) {

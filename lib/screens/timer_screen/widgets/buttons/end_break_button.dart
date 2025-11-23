@@ -15,7 +15,10 @@ class EndBreakButton extends StatelessWidget {
             context: context,
             builder: (context) {
               return AlertDialog(
-                title: Text("End your break early?"),
+                title: Text(
+                  textAlign: TextAlign.center,
+                  "End your break early?",
+                ),
                 actions: [noButton(context), yesButton(context)],
               );
             },

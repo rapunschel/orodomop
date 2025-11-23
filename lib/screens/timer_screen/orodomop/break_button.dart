@@ -34,6 +34,13 @@ class BreakDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     TextEditingController controller = TextEditingController();
+    TimerProvider model = context.read<TimerProvider>();
+    bool rememberX = model.rememberX;
+    int? x = model.X;
+    if (rememberX) {
+      controller.text = x == null ? "" : x.toString();
+    }
+
     void onSubmitted(dynamic value) {
       if (value.isNotEmpty) {
         int x = int.tryParse(value) ?? 0;
@@ -41,18 +48,18 @@ class BreakDialog extends StatelessWidget {
           Navigator.of(context).pop();
           return;
         }
-        context.read<TimerProvider>().startBreakTimer(x);
+        context.read<TimerProvider>().startBreakTimer(value: x);
       }
       Navigator.of(context).pop();
     }
 
     return AlertDialog(
-      title: Text("Set Break Duration (1/X)"),
+      title: Text(textAlign: TextAlign.center, "Set Break Duration (1/X)"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
-            autofocus: true,
+            autofocus: rememberX && x != null ? false : true,
             onSubmitted: (_) {
               onSubmitted(controller.text);
             },
@@ -66,15 +73,15 @@ class BreakDialog extends StatelessWidget {
       actions: [
         TextButton(
           onPressed: () {
-            onSubmitted(controller.text);
-          },
-          child: Text("OK"),
-        ),
-        TextButton(
-          onPressed: () {
             Navigator.of(context).pop();
           },
           child: Text("Cancel"),
+        ),
+        TextButton(
+          onPressed: () {
+            onSubmitted(controller.text);
+          },
+          child: Text("OK"),
         ),
       ],
     );

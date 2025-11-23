@@ -1,32 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:orodomop/screens/timer_screen.dart';
+import 'package:orodomop/providers/settings_provider.dart';
+import 'package:orodomop/screens/settings_screen/settings_screen.dart';
+import 'package:orodomop/screens/timer_screen/timer_screen.dart';
 import 'package:orodomop/themes/dark_theme.dart';
 import 'package:orodomop/themes/light_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:orodomop/providers/timer_provider.dart';
 import 'package:flutter_foreground_task/flutter_foreground_task.dart';
-import 'package:orodomop/services/notification_service.dart';
-import 'package:orodomop/services/service_manager.dart';
+import 'package:orodomop/services/notification/notification_service.dart';
+import 'package:orodomop/services/foreground/service_manager.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:orodomop/providers/theme_provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   tz.initializeTimeZones();
-  tz.setLocalLocation(tz.getLocation(await FlutterTimezone.getLocalTimezone()));
 
-  final timerModel = await TimerProvider.create();
-  final themeModel = await ThemeProvider.create();
-  await NotificationService().initNotification();
+  final futures = <Future>[
+    SharedPreferences.getInstance(),
+    FlutterTimezone.getLocalTimezone(),
+    NotificationService().initNotification(),
+  ];
+
+  final results = await Future.wait(futures);
+  SharedPreferences prefs = results[0] as SharedPreferences;
+  final localTimeZone = results[1] as String;
+  final settingsProvider = SettingsProvider.getInstance(prefs);
+  final timerProvider = TimerProvider(prefs);
+  final themeProvider = ThemeProvider(prefs);
+
+  tz.setLocalLocation(tz.getLocation(localTimeZone));
 
   FlutterForegroundTask.initCommunicationPort();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => timerModel),
-        ChangeNotifierProvider(create: (context) => themeModel),
+        ChangeNotifierProvider(create: (context) => timerProvider),
+        ChangeNotifierProvider(create: (context) => themeProvider),
+        ChangeNotifierProvider(create: (context) => settingsProvider),
       ],
       child: OrodomopApp(),
     ),
@@ -72,7 +87,10 @@ class _OrodomopAppState extends State<OrodomopApp> with WidgetsBindingObserver {
       builder: (context, isLightTheme, child) {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
-          routes: {'/': (context) => const TimerScreen()},
+          routes: {
+            '/': (context) => const TimerScreen(),
+            '/settings': (context) => const SettingsScreen(),
+          },
           initialRoute: '/',
           title: 'Orodomop',
           theme: isLightTheme ? lightTheme() : darkTheme(),

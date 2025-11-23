@@ -5,6 +5,8 @@ import 'package:flutter/widgets.dart';
 import 'dart:async';
 
 enum NotificationId {
+  breakReminder(2),
+  focusEnd(1),
   breakOver(1);
 
   final int value;
@@ -23,7 +25,12 @@ class NotificationService {
     await notificationPlugin.initialize(initSettings);
   }
 
-  void scheduleBreakNotification(NotificationId id, int seconds) {
+  void schedulePushNotification({
+    required NotificationId id,
+    required int seconds,
+    required String title,
+    required String body,
+  }) {
     try {
       final scheduledTime = tz.TZDateTime.now(
         tz.local,
@@ -31,8 +38,8 @@ class NotificationService {
 
       notificationPlugin.zonedSchedule(
         id.value, // Notification ID
-        "Break is over!",
-        "Time to focus",
+        title,
+        body,
         scheduledTime,
         NotificationDetails(
           android: AndroidNotificationDetails(

@@ -1,23 +1,31 @@
 import 'package:flutter/widgets.dart';
 import 'package:orodomop/models/chrono_cycle.dart';
 import 'package:orodomop/models/orodomop.dart';
+import 'package:orodomop/models/pomodoro.dart';
 import 'package:orodomop/models/timer_state.dart';
-import 'package:orodomop/services/notification_handler.dart';
+import 'package:orodomop/providers/settings_provider.dart';
+import 'package:orodomop/services/notification/notification_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
 class TimerProvider with ChangeNotifier {
   final SharedPreferences _prefs;
+  late final SettingsProvider _settings;
+  int? _x;
   ChronoCycle? _timeManager;
-  TimerProvider._(this._prefs);
 
-  static Future<TimerProvider> create() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int breakTimeRemaining = prefs.getInt("breakTimeRemaining") ?? 0;
-    int focusTime = prefs.getInt("focusTime") ?? 0;
-    String timestamp = prefs.getString("timestamp") ?? "";
+  TimerProvider(this._prefs) {
+    int breakTimeRemaining = _prefs.getInt("breakTimeRemaining") ?? 0;
+    int focusTime = _prefs.getInt("focusTime") ?? 0;
+    String timestamp = _prefs.getString("timestamp") ?? "";
+    _x = _prefs.getInt("X");
+
+    _settings = SettingsProvider.getInstance(_prefs);
+    _settings.onUsePomodoroCallback = _onTimerSwap;
+    _settings.onPomodoroDurationChange = _onPomodoroDurationChange;
+    _settings.onOrodomopSettingsChange = _onOrodomopSettingsChange;
     TimerState timerState = TimerState.fromString(
-      prefs.getString("timerState"),
+      _prefs.getString("timerState"),
     );
 
     if (!timerState.isIdle) {
@@ -30,18 +38,67 @@ class TimerProvider with ChangeNotifier {
       }
     }
 
-    TimerProvider model = TimerProvider._(prefs);
-
-    model.timeManager = Orodomop(
-      focusTime,
-      breakTimeRemaining,
-      timerState,
-      onStateChanged: model.notifyListeners,
-      clearPrefsCallback: model.clearPrefs,
-      notificationHandler: NotificationHandler(),
+    _timeManager = _createTimer(
+      focusTime: focusTime,
+      breakTimeRemaining: breakTimeRemaining,
+      timerState: timerState,
     );
+  }
 
-    return model;
+  void _onOrodomopSettingsChange(
+    bool reminderEnabled,
+    int breakReminderSeconds,
+  ) {
+    if (_timeManager is Orodomop) {
+      (_timeManager as Orodomop).breakReminderEnabled = reminderEnabled;
+      (_timeManager as Orodomop).breakReminderSeconds = breakReminderSeconds;
+    }
+  }
+
+  void _onPomodoroDurationChange(int focusDuration, int breakDuration) {
+    if (_timeManager is Pomodoro) {
+      (_timeManager as Pomodoro).focusDuration = focusDuration;
+      (_timeManager as Pomodoro).breakDuration = breakDuration;
+
+      if (_timeManager!.timerState.isIdle) {
+        _timeManager!.resetTimer(); // Update focus/ break time.
+      }
+      notifyListeners();
+    }
+  }
+
+  void _onTimerSwap() async {
+    await _timeManager!.resetTimer();
+    _timeManager = _createTimer();
+    notifyListeners();
+  }
+
+  ChronoCycle _createTimer({
+    int focusTime = 0,
+    int breakTimeRemaining = 0,
+    TimerState timerState = TimerState.idle,
+  }) {
+    return _settings.usePomodoro
+        ? Pomodoro(
+          _settings.focusDuration,
+          _settings.breakDuration,
+          _settings.focusDuration,
+          breakTimeRemaining,
+          timerState,
+          onStateChanged: notifyListeners,
+          clearPrefsCallback: clearPrefs,
+          notificationHandler: NotificationHandler(),
+        )
+        : Orodomop(
+          focusTime,
+          breakTimeRemaining,
+          timerState,
+          _settings.breakReminderEnabled,
+          _settings.breakReminderSeconds,
+          onStateChanged: notifyListeners,
+          clearPrefsCallback: clearPrefs,
+          notificationHandler: NotificationHandler(),
+        );
   }
 
   Future<void> saveState() async {
@@ -49,6 +106,10 @@ class TimerProvider with ChangeNotifier {
     await _prefs.setInt("focusTime", _timeManager!.focusTime);
     await _prefs.setString("timestamp", DateTime.now().toString());
     await _prefs.setString("timerState", _timeManager!.timerState.name);
+
+    if (_x != null) {
+      await _prefs.setInt("X", _x!);
+    }
   }
 
   Future<void> clearPrefs() async {
@@ -66,8 +127,13 @@ class TimerProvider with ChangeNotifier {
     _timeManager!.startFocusTimer();
   }
 
-  void startBreakTimer(int value) {
-    _timeManager!.startBreakTimer(value);
+  void startBreakTimer({int? value}) {
+    if (value == null) {
+      _timeManager!.startBreakTimer();
+      return;
+    }
+    _x = value;
+    _timeManager!.startBreakTimer(value: value);
   }
 
   void resetTimer() {
@@ -87,4 +153,7 @@ class TimerProvider with ChangeNotifier {
   get focusTime => _timeManager!.focusTime;
   get breakTimeRemaining => _timeManager!.breakTimeRemaining;
   get timerState => _timeManager!.timerState;
+  get usePomodoro => _settings.usePomodoro;
+  get rememberX => _settings.rememberX;
+  get X => _x;
 }
