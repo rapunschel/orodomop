@@ -43,15 +43,17 @@ class OrodomopSettingsSection extends StatelessWidget {
                 },
               ),
             ),
-            SettingsItem(
-              text: "Break reminder (m)",
-              widget: SettingsDurationTextForm(
-                seconds: values.breakReminderSeconds,
-                onSubmit: ({required seconds}) {
-                  model.breakReminderSeconds = seconds;
-                },
-              ),
-            ),
+            values.reminderEnabled
+                ? SettingsItem(
+                  text: "Break reminder (m)",
+                  widget: SettingsDurationTextForm(
+                    seconds: values.breakReminderSeconds,
+                    onSubmit: ({required seconds}) {
+                      model.breakReminderSeconds = seconds;
+                    },
+                  ),
+                )
+                : SizedBox.shrink(),
           ],
         );
       },
