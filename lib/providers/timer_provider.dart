@@ -23,6 +23,7 @@ class TimerProvider with ChangeNotifier {
     _settings = SettingsProvider.getInstance(_prefs);
     _settings.onUsePomodoroCallback = _onTimerSwap;
     _settings.onPomodoroDurationChange = _onPomodoroDurationChange;
+    _settings.onOrodomopSettingsChange = _onOrodomopSettingsChange;
     TimerState timerState = TimerState.fromString(
       _prefs.getString("timerState"),
     );
@@ -42,6 +43,16 @@ class TimerProvider with ChangeNotifier {
       breakTimeRemaining: breakTimeRemaining,
       timerState: timerState,
     );
+  }
+
+  void _onOrodomopSettingsChange(
+    bool reminderEnabled,
+    int breakReminderSeconds,
+  ) {
+    if (_timeManager is Orodomop) {
+      (_timeManager as Orodomop).breakReminderEnabled = reminderEnabled;
+      (_timeManager as Orodomop).breakReminderSeconds = breakReminderSeconds;
+    }
   }
 
   void _onPomodoroDurationChange(int focusDuration, int breakDuration) {
