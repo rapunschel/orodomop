@@ -17,7 +17,7 @@ class NotificationHandler {
       id: NotificationId.breakReminder,
       seconds: time,
       title: "Break time!",
-      body: "Time for a break...?",
+      body: "Time for a break",
     );
   }
 
