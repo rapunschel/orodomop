@@ -26,7 +26,7 @@ class NotificationHandler {
       id: NotificationId.focusEnd,
       seconds: time,
       title: "Break reminder",
-      body: "T",
+      body: "Take a break?",
     );
   }
 
