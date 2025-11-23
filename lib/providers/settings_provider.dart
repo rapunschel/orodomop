@@ -5,6 +5,8 @@ class SettingsProvider with ChangeNotifier {
   final SharedPreferences _prefs;
   Function? onUsePomodoroCallback;
   Function(int focusDuration, int breakDuration)? onPomodoroDurationChange;
+  Function(bool reminderEnabled, int breakReminderSeconds)?
+  onOrodomopSettingsChange;
 
   static SettingsProvider? _instance;
   bool _usePomodoro;
@@ -76,6 +78,7 @@ class SettingsProvider with ChangeNotifier {
   set breakReminderSeconds(int value) {
     _breakReminderSeconds = value;
     _prefs.setInt("breakReminderSeconds", value);
+    onOrodomopSettingsChange!(_breakReminderEnabled, _breakReminderSeconds);
     notifyListeners();
   }
 
@@ -94,6 +97,7 @@ class SettingsProvider with ChangeNotifier {
   set breakReminderEnabled(bool value) {
     _breakReminderEnabled = value;
     _prefs.setBool("breakReminderEnabled", value);
+    onOrodomopSettingsChange!(_breakReminderEnabled, _breakReminderSeconds);
     notifyListeners();
   }
 
