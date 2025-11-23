@@ -31,10 +31,9 @@ class SettingsProvider with ChangeNotifier {
   static SettingsProvider getInstance(SharedPreferences prefs) {
     if (_instance != null) return _instance!;
     bool usePomodoro = prefs.getBool("usePomodoro") ?? false;
-    // TODO update with proper values after testing
-    int focusDuration = prefs.getInt("focusDuration") ?? 6;
-    int breakDuration = prefs.getInt("breakDuration") ?? 3;
-    int breakReminderSeconds = prefs.getInt("breakReminderSeconds") ?? 10;
+    int focusDuration = prefs.getInt("focusDuration") ?? 25 * 60;
+    int breakDuration = prefs.getInt("breakDuration") ?? 5 * 60;
+    int breakReminderSeconds = prefs.getInt("breakReminderSeconds") ?? 60 * 60;
     bool breakReminderEnabled = prefs.getBool("breakReminderEnabled") ?? true;
     bool rememberX = prefs.getBool("rememberX") ?? true;
     bool hideSettingsButton = prefs.getBool("hideSettingsButton") ?? false;
