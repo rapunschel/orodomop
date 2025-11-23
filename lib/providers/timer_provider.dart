@@ -30,13 +30,22 @@ class TimerProvider with ChangeNotifier {
 
     if (!timerState.isIdle) {
       if (timerState.isOnFocus) {
-        focusTime +=
-            DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+        if (_settings.usePomodoro) {
+          focusTime -=
+              DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+        } else {
+          focusTime +=
+              DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
+        }
       } else if (timerState.isOnBreak) {
         breakTimeRemaining -=
             DateTime.now().difference(DateTime.parse(timestamp)).inSeconds;
       }
     }
+
+    debugPrint(
+      "Focus: ${focusTime.toString()} | pomo: ${_settings.usePomodoro}",
+    );
 
     _timeManager = _createTimer(
       focusTime: focusTime,
@@ -81,8 +90,10 @@ class TimerProvider with ChangeNotifier {
     return _settings.usePomodoro
         ? Pomodoro(
           _settings.focusDuration,
-          _settings.breakDuration,
-          _settings.focusDuration,
+          breakTimeRemaining == 0
+              ? _settings.breakDuration
+              : breakTimeRemaining,
+          focusTime == 0 ? _settings.focusDuration : focusTime,
           breakTimeRemaining,
           timerState,
           onStateChanged: notifyListeners,
@@ -128,10 +139,12 @@ class TimerProvider with ChangeNotifier {
   }
 
   void startBreakTimer({int? value}) {
+    // Pomodoro
     if (value == null) {
       _timeManager!.startBreakTimer();
       return;
     }
+    // Orodomop
     _x = value;
     _timeManager!.startBreakTimer(value: value);
   }
