@@ -3,14 +3,14 @@ import 'package:orodomop/models/chrono_cycle.dart';
 import 'package:orodomop/models/timer_state.dart';
 
 class Orodomop extends ChronoCycle {
-  bool breakReminderEnabled;
-  int breakReminderSeconds;
+  bool _breakReminderEnabled;
+  int _breakReminderSeconds;
   Orodomop(
     super.currFocusTime,
     super.breakTime,
     super._timerState,
-    this.breakReminderEnabled,
-    this.breakReminderSeconds, {
+    this._breakReminderEnabled,
+    this._breakReminderSeconds, {
     required super.onStateChanged,
     required super.clearPrefsCallback,
     required super.notificationHandler,
@@ -23,12 +23,10 @@ class Orodomop extends ChronoCycle {
     notificationHandler.cancelBreakPushNotification();
     await notificationHandler.startForegroundService();
 
-    await notificationHandler.scheduleBreakReminderNotification(10);
-
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
-      if (breakReminderEnabled && currFocusTime % breakReminderSeconds == 0) {
+      if (_breakReminderEnabled && currFocusTime % _breakReminderSeconds == 0) {
         await notificationHandler.scheduleBreakReminderNotification(
-          breakReminderSeconds,
+          _breakReminderSeconds,
         );
       }
       currFocusTime++;
@@ -77,4 +75,17 @@ class Orodomop extends ChronoCycle {
       notificationHandler.startBreakForegroundTask(breakTime);
     });
   }
+
+  set breakReminderSeconds(int seconds) {
+    notificationHandler.cancelBreakReminderNotification();
+    _breakReminderSeconds = seconds;
+  }
+
+  set breakReminderEnabled(bool reminderEnabled) {
+    notificationHandler.cancelBreakReminderNotification();
+    _breakReminderEnabled = reminderEnabled;
+  }
+
+  bool get breakReminderEnabled => _breakReminderEnabled;
+  int get breakReminderSeconds => _breakReminderSeconds;
 }
