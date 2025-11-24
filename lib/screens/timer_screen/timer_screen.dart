@@ -54,29 +54,35 @@ class _TimerScreenState extends State<TimerScreen> {
               return Selector<SettingsProvider, ({bool usePomodoro})>(
                 selector: (context, model) => (usePomodoro: model.usePomodoro),
                 builder: (context, value, child) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(
-                        minHeight: constraints.maxHeight,
+                  return Center(
+                    child: ScrollConfiguration(
+                      behavior: const ScrollBehavior().copyWith(
+                        overscroll: false,
                       ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            GestureDetector(
-                              onDoubleTap: () {
-                                Navigator.pushNamed(context, '/settings');
-                              },
-                              child: CycleTimer(),
-                            ),
-                            value.usePomodoro
-                                ? pomodoro.TimerControlRow()
-                                : orodomop.TimerControlRow(),
-                            SizedBox(
-                              height: Scaffold.of(context).appBarMaxHeight,
-                            ),
-                          ],
+                      child: SingleChildScrollView(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight,
+                          ),
+
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onDoubleTap: () {
+                                  Navigator.pushNamed(context, '/settings');
+                                },
+                                child: CycleTimer(),
+                              ),
+                              value.usePomodoro
+                                  ? pomodoro.TimerControlRow()
+                                  : orodomop.TimerControlRow(),
+                              SizedBox(
+                                height: Scaffold.of(context).appBarMaxHeight,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -101,6 +107,7 @@ class TimerScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
       selector: (_, settings) => settings.hideSettingsButton,
       builder: (context, hideSettingsButton, child) {
         return AppBar(
+          scrolledUnderElevation: 0.0,
           actions: [
             hideSettingsButton
                 ? SizedBox.shrink()
