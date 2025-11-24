@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:orodomop/models/chrono_cycle.dart';
 import 'package:orodomop/models/timer_state.dart';
+import 'package:orodomop/services/notification/notification_handler.dart';
 
 class Pomodoro extends ChronoCycle {
   int _focusDuration;
@@ -13,7 +14,6 @@ class Pomodoro extends ChronoCycle {
     super._timerState, {
     required super.onStateChanged,
     required super.clearPrefsCallback,
-    required super.notificationHandler,
   }) {
     if (timerState.isIdle) {
       if (!(breakTime > 0)) {
@@ -23,22 +23,23 @@ class Pomodoro extends ChronoCycle {
   }
 
   @override
-  void startFocusTimer() async {
+  Future<void> startFocusTimer() async {
     timer?.cancel();
     setState(TimerState.onFocus);
+    await Future.wait(<Future>[
+      NotificationHandler.scheduleFocusEndedNotification(currFocusTime),
+      NotificationHandler.startForegroundService(),
+    ]);
 
-    notificationHandler.scheduleFocusEndedNotification(currFocusTime);
-    await notificationHandler.startForegroundService();
-
-    timer = Timer.periodic(Duration(seconds: 1), (timer) {
+    timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (--currFocusTime <= 0) {
-        notificationHandler.stopForegroundTask();
+        timer.cancel();
+        NotificationHandler.stopForegroundTask();
         breakTime = _breakDuration;
         setState(TimerState.idle);
-        timer.cancel();
         return;
       }
-      notificationHandler.startFocusForegroundTask(currFocusTime);
+      NotificationHandler.startFocusForegroundTask(currFocusTime);
       onStateChanged();
     });
   }
@@ -48,32 +49,35 @@ class Pomodoro extends ChronoCycle {
     timer?.cancel();
     currFocusTime = _focusDuration;
     breakTime = 0;
-    notificationHandler.stopForegroundTask();
-    notificationHandler.cancelBreakPushNotification();
-    notificationHandler.cancelFocusEndedPushNotification();
+
+    await NotificationHandler.cancelAllNotifs();
 
     setState(TimerState.idle);
     await clearPrefsCallback();
   }
 
   @override
-  void startBreakTimer({int? value}) async {
+  Future<void> startBreakTimer({int? value}) async {
     timer?.cancel();
 
     setState(TimerState.onBreak);
-    notificationHandler.scheduleBreakOverNotification(breakTime);
-    await notificationHandler.startForegroundService();
+
+    await Future.wait(<Future>[
+      NotificationHandler.scheduleBreakOverNotification(breakTime),
+      NotificationHandler.startForegroundService(),
+    ]);
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (breakTime-- <= 0) {
+        timer.cancel();
         currFocusTime = _focusDuration;
         setState(TimerState.idle);
-        notificationHandler.stopForegroundTask();
+        NotificationHandler.stopForegroundTask();
         await clearPrefsCallback();
         return;
       }
       onStateChanged.call();
-      notificationHandler.startBreakForegroundTask(breakTime);
+      NotificationHandler.startBreakForegroundTask(breakTime);
     });
   }
 

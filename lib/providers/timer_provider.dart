@@ -71,8 +71,8 @@ class TimerProvider with ChangeNotifier {
     }
   }
 
-  void _onTimerSwap() async {
-    await _timeManager!.resetTimer();
+  Future<void> _onTimerSwap() async {
+    await NotificationHandler.cancelAllNotifs();
     _timeManager = _createTimer();
     notifyListeners();
   }
@@ -91,7 +91,6 @@ class TimerProvider with ChangeNotifier {
           timerState,
           onStateChanged: notifyListeners,
           clearPrefsCallback: clearPrefs,
-          notificationHandler: NotificationHandler(),
         )
         : Orodomop(
           focusTime,
@@ -101,15 +100,16 @@ class TimerProvider with ChangeNotifier {
           _settings.breakReminderSeconds,
           onStateChanged: notifyListeners,
           clearPrefsCallback: clearPrefs,
-          notificationHandler: NotificationHandler(),
         );
   }
 
   Future<void> saveState() async {
-    await _prefs.setInt("breakTimeRemaining", _timeManager!.breakTimeRemaining);
-    await _prefs.setInt("focusTime", _timeManager!.focusTime);
-    await _prefs.setString("timestamp", DateTime.now().toString());
-    await _prefs.setString("timerState", _timeManager!.timerState.name);
+    await Future.wait(<Future>[
+      _prefs.setInt("breakTimeRemaining", _timeManager!.breakTimeRemaining),
+      _prefs.setInt("focusTime", _timeManager!.focusTime),
+      _prefs.setString("timestamp", DateTime.now().toString()),
+      _prefs.setString("timerState", _timeManager!.timerState.name),
+    ]);
 
     if (_x != null) {
       await _prefs.setInt("X", _x!);
@@ -117,10 +117,12 @@ class TimerProvider with ChangeNotifier {
   }
 
   Future<void> clearPrefs() async {
-    await _prefs.remove("breakTimeRemaining");
-    await _prefs.remove("focusTime");
-    await _prefs.remove("timestamp");
-    await _prefs.remove("timerState");
+    await Future.wait(<Future>[
+      _prefs.remove("breakTimeRemaining"),
+      _prefs.remove("focusTime"),
+      _prefs.remove("timestamp"),
+      _prefs.remove("timerState"),
+    ]);
   }
 
   void onAppResumed() {

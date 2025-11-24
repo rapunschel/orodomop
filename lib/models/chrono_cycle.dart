@@ -14,8 +14,6 @@ abstract class ChronoCycle {
   final Function onStateChanged;
   @protected
   final Future<void> Function() clearPrefsCallback;
-  @protected
-  final NotificationHandler notificationHandler;
   TimerState _timerState;
 
   ChronoCycle(
@@ -24,7 +22,6 @@ abstract class ChronoCycle {
     this._timerState, {
     required this.onStateChanged,
     required this.clearPrefsCallback,
-    required this.notificationHandler,
   });
 
   void onAppResumed() {
@@ -35,26 +32,27 @@ abstract class ChronoCycle {
     }
   }
 
-  void startFocusTimer();
+  Future<void> startFocusTimer();
 
-  void startBreakTimer({int? value});
+  Future<void> startBreakTimer({int? value});
 
-  void resume() {
+  Future<void> resume() async {
     if (!_timerState.isPaused) return;
 
     if (breakTime > 0 && currFocusTime == 0) {
-      return startBreakTimer();
+      await startBreakTimer();
     }
 
     startFocusTimer();
   }
 
-  void pause() {
+  Future<void> pause() async {
     timer?.cancel();
-    notificationHandler.stopForegroundTask();
-    notificationHandler.cancelBreakPushNotification();
-    notificationHandler.cancelFocusEndedPushNotification();
-    notificationHandler.cancelBreakReminderNotification();
+    await Future.wait(<Future>[
+      NotificationHandler.cancelBreakPushNotification(),
+      NotificationHandler.cancelBreakReminderNotification(),
+      NotificationHandler.cancelFocusEndedPushNotification(),
+    ]);
     setState(TimerState.paused);
   }
 

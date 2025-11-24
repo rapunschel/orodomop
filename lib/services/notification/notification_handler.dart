@@ -3,7 +3,9 @@ import 'package:orodomop/services/notification/notification_service.dart';
 import 'package:orodomop/services/foreground/service_manager.dart';
 
 class NotificationHandler {
-  Future<void> scheduleBreakOverNotification(int time) async {
+  NotificationHandler._();
+
+  static Future<void> scheduleBreakOverNotification(int time) async {
     NotificationService().schedulePushNotification(
       id: NotificationId.breakOver,
       seconds: time,
@@ -12,7 +14,7 @@ class NotificationHandler {
     );
   }
 
-  Future<void> scheduleFocusEndedNotification(int time) async {
+  static Future<void> scheduleFocusEndedNotification(int time) async {
     NotificationService().schedulePushNotification(
       id: NotificationId.breakReminder,
       seconds: time,
@@ -21,40 +23,51 @@ class NotificationHandler {
     );
   }
 
-  Future<void> scheduleBreakReminderNotification(int time) async {
+  static Future<void> scheduleBreakReminderNotification(int time) async {
     NotificationService().schedulePushNotification(
-      id: NotificationId.focusEnd,
+      id: NotificationId.breakReminder,
       seconds: time,
       title: "Break reminder",
       body: "Take a break?",
     );
   }
 
-  Future<void> startFocusForegroundTask(int time) async {
+  static void startFocusForegroundTask(int time) {
     ServiceManager.startFocusForegroundTask(time);
   }
 
-  Future<void> startBreakForegroundTask(int time) async {
+  static void startBreakForegroundTask(int time) {
     ServiceManager.startBreakForegroundTask(time);
   }
 
-  Future<void> startForegroundService() async {
-    ServiceManager.startService();
+  static Future<void> startForegroundService() async {
+    await ServiceManager.startService();
   }
 
-  Future<void> stopForegroundTask() async {
-    ServiceManager.stopService();
+  static Future<void> stopForegroundTask() async {
+    await ServiceManager.stopService();
   }
 
-  Future<void> cancelBreakPushNotification() async {
-    NotificationService().cancelNotification(NotificationId.breakOver);
+  static Future<void> cancelAllNotifs() async {
+    await Future.wait(<Future>[
+      cancelBreakPushNotification(),
+      cancelBreakReminderNotification(),
+      cancelFocusEndedPushNotification(),
+      stopForegroundTask(),
+    ]);
   }
 
-  Future<void> cancelBreakReminderNotification() async {
-    NotificationService().cancelNotification(NotificationId.breakReminder);
+  static Future<void> cancelBreakPushNotification() async {
+    await NotificationService().cancelNotification(NotificationId.breakOver);
   }
 
-  Future<void> cancelFocusEndedPushNotification() async {
-    NotificationService().cancelNotification(NotificationId.focusEnd);
+  static Future<void> cancelBreakReminderNotification() async {
+    await NotificationService().cancelNotification(
+      NotificationId.breakReminder,
+    );
+  }
+
+  static Future<void> cancelFocusEndedPushNotification() async {
+    await NotificationService().cancelNotification(NotificationId.focusEnd);
   }
 }
