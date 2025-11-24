@@ -44,7 +44,7 @@ class TimerProvider with ChangeNotifier {
     }
 
     debugPrint(
-      "Focus: ${focusTime.toString()} | pomo: ${_settings.usePomodoro}",
+      "Focus: ${focusTime.toString()} | break: ${breakTimeRemaining.toString()}",
     );
 
     _timeManager = _createTimer(
@@ -68,11 +68,6 @@ class TimerProvider with ChangeNotifier {
     if (_timeManager is Pomodoro) {
       (_timeManager as Pomodoro).focusDuration = focusDuration;
       (_timeManager as Pomodoro).breakDuration = breakDuration;
-
-      if (_timeManager!.timerState.isIdle) {
-        _timeManager!.resetTimer(); // Update focus/ break time.
-      }
-      notifyListeners();
     }
   }
 
@@ -90,10 +85,8 @@ class TimerProvider with ChangeNotifier {
     return _settings.usePomodoro
         ? Pomodoro(
           _settings.focusDuration,
-          breakTimeRemaining == 0
-              ? _settings.breakDuration
-              : breakTimeRemaining,
-          focusTime == 0 ? _settings.focusDuration : focusTime,
+          _settings.breakDuration,
+          focusTime,
           breakTimeRemaining,
           timerState,
           onStateChanged: notifyListeners,

@@ -14,7 +14,13 @@ class Pomodoro extends ChronoCycle {
     required super.onStateChanged,
     required super.clearPrefsCallback,
     required super.notificationHandler,
-  });
+  }) {
+    if (timerState.isIdle) {
+      if (!(breakTime > 0)) {
+        currFocusTime = _focusDuration;
+      }
+    }
+  }
 
   @override
   void startFocusTimer() async {
@@ -73,9 +79,19 @@ class Pomodoro extends ChronoCycle {
 
   set focusDuration(int value) {
     _focusDuration = value;
+
+    if (timerState.isIdle) {
+      currFocusTime = value;
+      onStateChanged();
+    }
   }
 
   set breakDuration(int value) {
     _breakDuration = value;
+
+    if (timerState.isIdle && focusTime <= 0) {
+      breakTime = value;
+      onStateChanged();
+    }
   }
 }
