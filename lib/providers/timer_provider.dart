@@ -72,7 +72,7 @@ class TimerProvider with ChangeNotifier {
   }
 
   Future<void> _onTimerSwap() async {
-    await NotificationHandler.cancelAllNotifs();
+    await _timeManager!.resetTimer();
     _timeManager = _createTimer();
     notifyListeners();
   }
