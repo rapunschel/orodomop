@@ -23,16 +23,22 @@ class Orodomop extends ChronoCycle {
     notificationHandler.cancelBreakPushNotification();
     await notificationHandler.startForegroundService();
 
+    // Schedule notification on resume.
+    if (_breakReminderEnabled && currFocusTime % _breakReminderSeconds != 0) {
+      notificationHandler.scheduleBreakReminderNotification(
+        _breakReminderSeconds - (currFocusTime % _breakReminderSeconds),
+      );
+    }
+
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
       if (_breakReminderEnabled && currFocusTime % _breakReminderSeconds == 0) {
         await notificationHandler.scheduleBreakReminderNotification(
           _breakReminderSeconds,
         );
       }
+
       currFocusTime++;
-
       notificationHandler.startFocusForegroundTask(currFocusTime);
-
       onStateChanged();
     });
   }
