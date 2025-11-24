@@ -107,7 +107,6 @@ class TimerScreenAppBar extends StatelessWidget implements PreferredSizeWidget {
       selector: (_, settings) => settings.hideSettingsButton,
       builder: (context, hideSettingsButton, child) {
         return AppBar(
-          scrolledUnderElevation: 0.0,
           actions: [
             hideSettingsButton
                 ? SizedBox.shrink()

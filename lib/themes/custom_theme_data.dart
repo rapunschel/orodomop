@@ -32,6 +32,7 @@ ThemeData customThemeData(
     scaffoldBackgroundColor: primaryColor,
 
     appBarTheme: AppBarTheme(
+      scrolledUnderElevation: 0.0,
       elevation: 0,
       centerTitle: true,
       titleTextStyle: TextStyle(fontSize: 36, color: appTitleColor),
