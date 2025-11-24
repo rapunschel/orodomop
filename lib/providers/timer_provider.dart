@@ -4,7 +4,6 @@ import 'package:orodomop/models/orodomop.dart';
 import 'package:orodomop/models/pomodoro.dart';
 import 'package:orodomop/models/timer_state.dart';
 import 'package:orodomop/providers/settings_provider.dart';
-import 'package:orodomop/services/notification/notification_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
 
