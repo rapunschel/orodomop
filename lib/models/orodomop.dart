@@ -14,7 +14,12 @@ class Orodomop extends ChronoCycle {
     this._breakReminderSeconds, {
     required super.onStateChanged,
     required super.clearPrefsCallback,
-  });
+  }) {
+    if (timerState.isOnBreak && breakTime <= 0) {
+      breakTime = 0;
+      setState(TimerState.idle);
+    }
+  }
 
   @override
   Future<void> startFocusTimer() async {
