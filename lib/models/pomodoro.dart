@@ -20,6 +20,18 @@ class Pomodoro extends ChronoCycle {
         currFocusTime = _focusDuration;
       }
     }
+
+    // Restore state from variables if app is terminated during a focus/break session
+    // Avoids showing negative numbers and / or UI changing on app start
+    if (timerState.isOnFocus && currFocusTime <= 0) {
+      currFocusTime = 0;
+      breakTime = _breakDuration;
+      setState(TimerState.idle);
+    } else if (timerState.isOnBreak && breakTime <= 0) {
+      breakTime = 0;
+      currFocusTime = _focusDuration;
+      setState(TimerState.idle);
+    }
   }
 
   @override
@@ -32,7 +44,7 @@ class Pomodoro extends ChronoCycle {
     ]);
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
-      if (--currFocusTime <= 0) {
+      if (currFocusTime-- <= 0) {
         timer.cancel();
         NotificationHandler.stopForegroundTask();
         breakTime = _breakDuration;
@@ -84,7 +96,7 @@ class Pomodoro extends ChronoCycle {
   set focusDuration(int value) {
     _focusDuration = value;
 
-    if (timerState.isIdle) {
+    if (timerState.isIdle && breakTime <= 0) {
       currFocusTime = value;
       onStateChanged();
     }
