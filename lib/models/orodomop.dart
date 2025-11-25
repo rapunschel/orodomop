@@ -80,6 +80,7 @@ class Orodomop extends ChronoCycle {
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (breakTime-- <= 0) {
+        timer.cancel();
         setState(TimerState.idle);
         NotificationHandler.stopForegroundTask();
         clearPrefsCallback();
