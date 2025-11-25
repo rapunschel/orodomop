@@ -16,7 +16,7 @@ class NotificationHandler {
 
   static Future<void> scheduleFocusEndedNotification(int time) async {
     NotificationService().schedulePushNotification(
-      id: NotificationId.breakReminder,
+      id: NotificationId.focusEnd,
       seconds: time,
       title: "Break time!",
       body: "Time for a break",

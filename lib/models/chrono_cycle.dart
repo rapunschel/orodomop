@@ -39,8 +39,8 @@ abstract class ChronoCycle {
   Future<void> resume() async {
     if (!_timerState.isPaused) return;
 
-    if (breakTime > 0 && currFocusTime == 0) {
-      await startBreakTimer();
+    if (breakTime > 0 && currFocusTime <= 0) {
+      return startBreakTimer();
     }
 
     startFocusTimer();
