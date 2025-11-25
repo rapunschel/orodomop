@@ -46,9 +46,10 @@ class CycleTimer extends StatelessWidget {
                   padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                   child: AutoSizeText(
                     StringFormatter.formatTime(
-                      values.breakTime > 0
-                          ? values.breakTime
-                          : values.focusTime,
+                      (values.timerState.isOnFocus || values.focusTime >= 0) &&
+                              values.breakTime <= 0
+                          ? values.focusTime
+                          : values.breakTime,
                     ),
                     maxLines: 1,
                     maxFontSize: 68,
