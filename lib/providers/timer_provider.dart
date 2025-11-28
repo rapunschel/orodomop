@@ -58,8 +58,8 @@ class TimerProvider with ChangeNotifier {
     int breakReminderSeconds,
   ) {
     if (_timeManager is Orodomop) {
-      (_timeManager as Orodomop).breakReminderEnabled = reminderEnabled;
-      (_timeManager as Orodomop).breakReminderSeconds = breakReminderSeconds;
+      (_timeManager as Orodomop).setBreakReminderEnabled(reminderEnabled);
+      (_timeManager as Orodomop).setBreakReminderSeconds(breakReminderSeconds);
     }
   }
 
