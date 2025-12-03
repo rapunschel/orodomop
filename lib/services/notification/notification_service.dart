@@ -53,13 +53,16 @@ class NotificationService {
         ),
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       );
-      debugPrint("Notification scheduled successfully.");
+      debugPrint(
+        " ${id.name} notification scheduled successfully. In: ${seconds.toString()} seconds",
+      );
     } catch (e) {
-      debugPrint("Error scheduling notification: $e");
+      debugPrint("Error scheduling ${id.name} notification: $e");
     }
   }
 
   Future<void> cancelNotification(NotificationId id) async {
+    debugPrint("${id.name} cancelled successfully");
     await notificationPlugin.cancel(id.value);
   }
 }
