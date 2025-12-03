@@ -21,7 +21,8 @@ class Orodomop extends ChronoCycle {
       breakTime = 0;
       setState(TimerState.idle);
     }
-    _nextNotificationTime = currFocusTime;
+    _nextNotificationTime =
+        _breakReminderSeconds - (currFocusTime % _breakReminderSeconds);
   }
 
   @override
@@ -36,7 +37,13 @@ class Orodomop extends ChronoCycle {
 
     // pause / resume
     if (_breakReminderEnabled) {
-      scheduleReminderNotification();
+      if (currFocusTime > 0) {
+        await scheduleReminderNotification(
+          seconds: _nextNotificationTime - currFocusTime,
+        );
+      } else {
+        await scheduleReminderNotification(seconds: _breakReminderSeconds);
+      }
     }
 
     timer = Timer.periodic(Duration(seconds: 1), (timer) async {
@@ -51,10 +58,16 @@ class Orodomop extends ChronoCycle {
   }
 
   Future<void> scheduleReminderNotification({int seconds = 0}) async {
+    if (seconds <= 0) {
+      throw ArgumentError.value(
+        seconds,
+        'seconds',
+        'Cannot schedule reminder in the past',
+      );
+    }
+
     _nextNotificationTime = currFocusTime + seconds;
-    await NotificationHandler.scheduleBreakReminderNotification(
-      _breakReminderSeconds,
-    );
+    await NotificationHandler.scheduleBreakReminderNotification(seconds);
   }
 
   @override
@@ -105,19 +118,25 @@ class Orodomop extends ChronoCycle {
   }
 
   Future<void> setBreakReminderSeconds(int seconds) async {
+    if (_breakReminderSeconds == seconds) return;
+
     await NotificationHandler.cancelBreakReminderNotification();
     _breakReminderSeconds = seconds;
 
-    if (_breakReminderEnabled) {
+    if (_breakReminderEnabled && timerState.isOnFocus) {
       await scheduleReminderNotification(seconds: _breakReminderSeconds);
     }
   }
 
   Future<void> setBreakReminderEnabled(bool reminderEnabled) async {
+    if (_breakReminderEnabled == reminderEnabled) return;
     _breakReminderEnabled = reminderEnabled;
-    await NotificationHandler.cancelBreakReminderNotification();
-    _nextNotificationTime = currFocusTime;
-    if (_breakReminderEnabled) {
+
+    if (!_breakReminderEnabled) {
+      await NotificationHandler.cancelBreakReminderNotification();
+    }
+
+    if (_breakReminderEnabled && timerState.isOnFocus) {
       await scheduleReminderNotification(seconds: _breakReminderSeconds);
       return;
     }
