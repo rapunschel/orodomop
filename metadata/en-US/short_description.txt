@@ -1,0 +1,1 @@
+An app for reverse (as well as regular) pomodoro: work until you're done with the task at hand, then take a break for 1/X of the time it took!

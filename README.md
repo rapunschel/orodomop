@@ -4,10 +4,10 @@ An app for **reverse** (as well as regular) [**pomodoro**](https://en.wikipedia.
 
 Written in Flutter for Android 7+.
 
-|                                  |                               |                                  |                                              |                                              |
-| -------------------------------- | ----------------------------- | -------------------------------- | -------------------------------------------- | -------------------------------------------- |
-| ![](screenshots/start_light.jpg) | ![](screenshots/up_light.jpg) | ![](screenshots/break_light.jpg) | ![](screenshots/orodomop_settings_light.jpg) | ![](screenshots/pomodoro_settings_light.jpg) |
-| ![](screenshots/start_dark.jpg)  | ![](screenshots/up_dark.jpg)  | ![](screenshots/break_dark.jpg)  | ![](screenshots/orodomop_settings_dark.jpg)  | ![](screenshots/pomodoro_settings_dark.jpg)  |
+|                                                             |                                                          |                                                             |                                                                         |                                                                         |
+| ----------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| ![](metadata/en-US/images/phoneScreenshots/start_light.jpg) | ![](metadata/en-US/images/phoneScreenshots/up_light.jpg) | ![](metadata/en-US/images/phoneScreenshots/break_light.jpg) | ![](metadata/en-US/images/phoneScreenshots/orodomop_settings_light.jpg) | ![](metadata/en-US/images/phoneScreenshots/pomodoro_settings_light.jpg) |
+| ![](metadata/en-US/images/phoneScreenshots/start_dark.jpg)  | ![](metadata/en-US/images/phoneScreenshots/up_dark.jpg)  | ![](metadata/en-US/images/phoneScreenshots/break_dark.jpg)  | ![](metadata/en-US/images/phoneScreenshots/orodomop_settings_dark.jpg)  | ![](metadata/en-US/images/phoneScreenshots/pomodoro_settings_dark.jpg)  |
 
 ## Features
 
