@@ -24,7 +24,6 @@ ThemeData customThemeData(
   Color elevatedButtonColor,
   double elevatedButtonTextSize,
   FontWeight elevatedButtonTextWeight,
-  Color toggleThemeModeColor,
 ) {
   Color appTitleColor = elevatedButtonTextColor;
   return ThemeData(
@@ -51,7 +50,11 @@ ThemeData customThemeData(
         color: timerTextColor,
       ),
       bodyMedium: TextStyle(fontSize: 18, color: dialogInputColor),
-      bodySmall: TextStyle(fontSize: 15, color: toggleThemeModeColor),
+      bodySmall: TextStyle(
+        fontSize: 15,
+        color: textButtonColor,
+        fontWeight: FontWeight.w500,
+      ),
     ),
     // Gradient border colors
     colorScheme: gradientColors,

@@ -29,9 +29,6 @@ ThemeData lightTheme() {
   double elevatedButtonTextSize = 14;
   FontWeight elevatedButtonTextWeight = FontWeight.bold;
 
-  // Toggle theme button color
-  Color toggleThemeModeColor = Colors.redAccent;
-
   // Timer
   double timerFontSize = 68;
   FontWeight timerFontWeight = FontWeight.bold;
@@ -65,6 +62,5 @@ ThemeData lightTheme() {
     elevatedButtonColor,
     elevatedButtonTextSize,
     elevatedButtonTextWeight,
-    toggleThemeModeColor,
   );
 }
