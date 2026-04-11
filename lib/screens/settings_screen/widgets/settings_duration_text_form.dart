@@ -19,6 +19,7 @@ class _SettingsDurationTextFormState extends State<SettingsDurationTextForm> {
   late TextEditingController _controller;
   late FocusNode _focusNode;
   late String originalValue;
+  String _newVal = "";
 
   @override
   void initState() {
@@ -29,7 +30,7 @@ class _SettingsDurationTextFormState extends State<SettingsDurationTextForm> {
 
     _focusNode.addListener(() {
       if (!_focusNode.hasFocus) {
-        _controller.text = originalValue;
+        onValueChanged(_newVal);
       }
     });
   }
@@ -40,24 +41,27 @@ class _SettingsDurationTextFormState extends State<SettingsDurationTextForm> {
     super.dispose();
   }
 
+  void onValueChanged(String value) {
+    int? minutes = int.tryParse(value);
+
+    if (minutes != null && minutes > 0) {
+      widget.onSubmit(seconds: minutes * 60);
+      originalValue = minutes.toString();
+    } else {
+      _controller.text = originalValue;
+    }
+
+    _focusNode.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFormField(
       controller: _controller,
       focusNode: _focusNode,
       keyboardType: TextInputType.number,
-      onFieldSubmitted: (value) {
-        int? minutes = int.tryParse(value);
-
-        if (minutes != null && minutes > 0) {
-          widget.onSubmit(seconds: minutes * 60);
-          originalValue = minutes.toString();
-        } else {
-          _controller.text = originalValue;
-        }
-
-        _focusNode.unfocus();
-      },
+      onFieldSubmitted: onValueChanged,
+      onChanged: (value) => _newVal = value,
     );
   }
 }
