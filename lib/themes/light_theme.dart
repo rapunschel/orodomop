@@ -11,20 +11,20 @@ ThemeData lightTheme() {
 
   Color dialogBackground = Colors.white;
   Color dialogBorderColor = Colors.redAccent;
-  Color dialogShadowColor = dialogBorderColor;
+  Color dialogShadowColor = Colors.redAccent;
   double dialogTitleFontSize = 19;
   double dialogBorderWidth = 2;
   double dialogBorderRadius = 33;
   double dialogElevation = 20;
 
-  // text button color (used by dialog amongst others)
-  Color textButtonColor = dialogBorderColor;
+  // text button color
+  Color textButtonColor = Colors.redAccent;
   double textButtonFontSize = 18;
 
   // Buttons
   Color elevatedButtonTextColor = Colors.black;
-  Color elevatedButtonColor = dialogBorderColor; // Colors.redAccent;
-  Color elevatedButtonShadowColor = elevatedButtonColor;
+  Color elevatedButtonColor = Colors.redAccent;
+  Color elevatedButtonShadowColor = Colors.redAccent;
   double elevatedButtonElevation = 5;
   double elevatedButtonTextSize = 14;
   FontWeight elevatedButtonTextWeight = FontWeight.bold;
