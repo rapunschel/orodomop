@@ -9,7 +9,7 @@ class EndBreakButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ConstrainedBox(
       constraints: BoxConstraints(minWidth: 80),
-      child: ElevatedButton(
+      child: TextButton(
         onPressed: () {
           showDialog(
             context: context,
@@ -25,7 +25,7 @@ class EndBreakButton extends StatelessWidget {
           );
           //
         },
-        child: Text("Stop"),
+        child: Text("Stop", style: Theme.of(context).textTheme.bodySmall),
       ),
     );
   }
