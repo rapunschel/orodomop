@@ -1,4 +1,4 @@
-package com.example.orodomop
+package com.rapunschel.orodomop
 
 import io.flutter.embedding.android.FlutterActivity
 

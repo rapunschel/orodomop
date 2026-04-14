@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.orodomop"
+    namespace = "com.rapunschel.orodomop"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = "27.0.12077973"
 
